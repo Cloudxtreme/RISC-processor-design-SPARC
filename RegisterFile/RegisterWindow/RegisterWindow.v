@@ -5,14 +5,14 @@
 *
 * Description: Register window module
 ***************************************/
-module  RegisterWindow(output reg [31:0] AxOut, BxOut, Aout, Bout, input [31:0] AxIn, BxIn, in, input WEx, input [4:0] RA, RB, input WE, BE3, BE2, BE1, input [7:0] RE, input [31:0] GA, GB, input Clk); 
+module  RegisterWindow(output reg [31:0] AxOut, BxOut, Aout, Bout, input [31:0] AxIn, BxIn, in, input WEx, input [4:0] RA, RB, input WE, BE3, BE2, BE1, input [7:0] RE, input [31:0] GA, GB, input Clk, RFE); 
   
   //Build two level combinatiorial circuit BLOCK 3
   wire block3AndLevel1;
-  and(block3AndLevel1, BE3, WE);
+  and(block3AndLevel1, BE3, WE, RFE);
   
   wire block3And2Level1;
-  and(block3And2Level1, BE1, WEx);
+  and(block3And2Level1, BE1, WEx, RFE);
   
   wire block3EN;
   or(block3EN,block3AndLevel1,block3AndLevel2);
@@ -25,7 +25,7 @@ module  RegisterWindow(output reg [31:0] AxOut, BxOut, Aout, Bout, input [31:0] 
   
   //Build 1 level combinatiorial circuit BLOCK 2
   wire block2EN;
-  and(block2EN, BE2, WE);
+  and(block2EN, BE2, WE, RFE);
   
   //Build Block2
   wire [31:0] Aout_temp_block2;

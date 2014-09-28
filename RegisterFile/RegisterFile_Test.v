@@ -24,10 +24,12 @@ module  RegisterFile_Test();
      $display("|------- Test #1 ---------|");
         Rin = 32'h00001111;
         RC = 5'b00000;
+        RFE = 1'b0; //set active low
         #100
         $display("\tWriting %h to R0", Rin);
         Clk = 1'b1; //__/T
         #100 Clk = 1'b0;
+        RFE = 1'b1; //clear active low
         RA = 5'b00000;
         CWP = 2'b00;
         #100
@@ -36,9 +38,11 @@ module  RegisterFile_Test();
     $display("|------- Test #2 ---------|");
         CWP = 2'b01;
         RC = 5'b11101;
+        RFE = 1'b0; //set active low
         $display("\tWriting %h to R29 of W1", Rin);
         #100
         Clk = 1'b1; //__/T
+        RFE = 1'b1; //clear active low
         #100 Clk = 1'b0;
         CWP = 2'b10;
         RB = 5'b01101;
