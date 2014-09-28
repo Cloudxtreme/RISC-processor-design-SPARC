@@ -18,7 +18,7 @@ module  ram_256b(output reg [31:0] DataOut, output reg MFC, input MFA, input [5:
                         end
                     6'b001010:  //ldsh load signed half word
                         begin
-                            DataOut <= {{16{ram[address][7]}}, ram[address], ram[address+1] };
+                            DataOut <= {{16{ram[address][15]}}, ram[address], ram[address+1] };
                         end
                     6'b001000:  //ld load word (32 bit)
                         begin
