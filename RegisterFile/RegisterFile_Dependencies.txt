@@ -1,0 +1,10 @@
+../Mux/mux_2x1_32bit.v
+../Mux/mux_4x1_32bit.v
+../Registers/register_32bit_loadE_asyncClr.v
+../Decoders/decoder_2x4.v
+../Decoders/decoder_3x8.v
+./RegisterBlock/RegisterBlock_32bit.v
+./RegisterBlock/GlobalBlock.v
+./RegisterWindow/RegisterWindow.v
+RegisterFile.v
+RegisterFile_Test.v
