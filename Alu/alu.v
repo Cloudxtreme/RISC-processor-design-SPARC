@@ -66,6 +66,7 @@ module  ALU_32bit(output reg [31:0] result, output reg N, Z, C, V, input [31:0] 
                 6'b000101:  // A NAND B (bitwise) w.o S 
                     begin
                         result = ~(A_in & B_in);
+                        
                     end
                 6'b010101:  // A NAND B (bitwise) with S 
                     begin
