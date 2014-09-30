@@ -110,13 +110,41 @@ module  test_alu_32bit;
             $display("\tTest #2 ADD with S");  
             opcode = 6'b010000; // A ADD by  B 
             A_in = 32'hffffffff;
-            B_in = 32'b00000001;
+            B_in = 32'h00000001;
             #100
             $display("\t\tShowing register flags");
             $display("\t\t N Z C V ");
             $display("\t\t %b %b %b %b", N, Z, C, V);
       
-                    
+         //oefmeaofmeaofmaf
+         
+       $display("Testing SUB without carry w. o. S");  
+        opcode = 6'b000100; // A SUB by B without carry  
+        A_in = 32'h00000002;
+        B_in = 32'h00000001;
+        #100
+        $display("\tShowing register flags");
+        $display("\t N Z C V ");
+        $display("\t %b %b %b %b", N, Z, C, V);
+      
+       $display("Testing SUB without carry with S");  
+        opcode = 6'b010100; // A SUB by B  
+        A_in = 32'h01000001;
+        B_in = 32'hf0000001;
+        #100
+        $display("\tShowing register flags");
+        $display("\t N Z C V ");
+        $display("\t %b %b %b %b", N, Z, C, V);
+      
+            $display("\tTest #2 SUB with carry with S");  
+            opcode = 6'b011100; // A ADD by  B 
+            A_in = 32'hefffffff;
+            B_in = 32'hffffffff;
+            #100
+            $display("\t\tShowing register flags");
+            $display("\t\t N Z C V ");
+            $display("\t\t %b %b %b %b", N, Z, C, V);
+      
     end
     
     initial begin

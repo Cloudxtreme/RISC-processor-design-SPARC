@@ -6,6 +6,8 @@
 * Description: 32 bit ALU for sparc implementation.
 ***************************************/
 module  ALU_32bit(output reg [31:0] result, output reg N, Z, C, V, input [31:0] A_in, B_in, input [5:0] opcode, input carry);
+    reg [32:0] temp_res;
+    
     always @ (A_in, B_in, opcode, carry)
         begin
             case(opcode)
@@ -15,7 +17,9 @@ module  ALU_32bit(output reg [31:0] result, output reg N, Z, C, V, input [31:0] 
                     end
                 6'b010000:  //add with S
                     begin
-                        result = A_in + B_in;   
+                        temp_res = A_in + B_in;
+                        result = temp_res[31:0];
+                        //checkCarryFlag;   
                         checkAddOverflow;
                         checkNegFlag;
                         checkZeroFlag;
@@ -30,6 +34,7 @@ module  ALU_32bit(output reg [31:0] result, output reg N, Z, C, V, input [31:0] 
                         checkAddOverflow;
                         checkNegFlag;
                         checkZeroFlag;
+                        checkCarryFlag;
                     end
                 6'b000100:  //sub without carry w.o. S 
                     begin
@@ -46,12 +51,13 @@ module  ALU_32bit(output reg [31:0] result, output reg N, Z, C, V, input [31:0] 
                     begin
                         result = A_in - B_in - C;
                     end
-                6'b011100:  //subx without carry with S 
+                6'b011100:  //subx with carry with S 
                     begin
                         result = A_in - B_in - C; //Sure?
                         checkSubOverflow;
                         checkNegFlag;
                         checkZeroFlag;
+                        checkCarryFlag;
                     end
                 6'b000001:  // A AND B (bitwise) 
                     begin
@@ -166,6 +172,17 @@ module  ALU_32bit(output reg [31:0] result, output reg N, Z, C, V, input [31:0] 
      task checkNegFlag;
         begin 
             N = result[31];
+        end
+     endtask
+     
+     task checkCarryFlag;
+        begin   //adding e.g. 1000 + 1000 =  10000                     substracting e.g. 1000 - 0101 = 
+           if( temp_res[32] == 1 )
+            begin
+            C = 1;
+            temp_res = 0;
+            end 
+           else C = 0;
         end
      endtask
      
