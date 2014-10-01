@@ -10,7 +10,9 @@ module  test_alu_32bit;
     initial #sim_time $finish;                  //simulation time
     initial begin
        //AND TEST    
-       $display("Testing AND w. o. S");
+       $display("|---------- Testing logical functions -----------|");
+       $display("\t============ AND ===========");  
+       $display("\tTesting AND w. o. S");
         A_in = 32'h00000000; 
         B_in = 32'h11111111;
         
@@ -18,7 +20,7 @@ module  test_alu_32bit;
         carry = 1'b0;
            
         #100
-       $display("Testing AND with S");        
+       $display("\tTesting AND with S");        
         A_in = 32'h11110000; 
         B_in = 32'h11111111;
         
@@ -31,7 +33,7 @@ module  test_alu_32bit;
         #100
         
         //NAND TEST 
-      $display("Testing NAND w. o. S");
+      $display("\tTesting NAND w. o. S");
         A_in = 32'h00000000; 
         B_in = 32'h11111111;
         
@@ -39,111 +41,135 @@ module  test_alu_32bit;
         #100
         $display("\tShowing register flags");
         $display("\t N Z C V ");
-        $display("\t %b %b %b %b", N, Z, C, V);
+        $display("\t %b %b %b %b\n", N, Z, C, V);
       
-      $display("Testing NAND with S");  
+      $display("\tTesting NAND with S");  
         opcode = 6'b010101;
         #100
         $display("\tShowing register flags");
         $display("\t N Z C V ");
-        $display("\t %b %b %b %b", N, Z, C, V);
-        
-      $display("Testing XOR with S");  
+        $display("\t %b %b %b %b\n", N, Z, C, V);
+      $display("\t============ XOR ===========");  
+      $display("\tTesting XOR with S");  
         opcode = 6'b010111;  // A XNOR B (bitwise) with S
         #100
         $display("\tShowing register flags");
         $display("\t N Z C V ");
-        $display("\t %b %b %b %b", N, Z, C, V);
+        $display("\t %b %b %b %b\n", N, Z, C, V);
         
-      $display("Testing XOR with S");  
+      $display("\tTesting XOR with S");  
         opcode = 6'b010111;  // A XNOR B (bitwise) with S
         #100
         $display("\tShowing register flags");
         $display("\t N Z C V ");
-        $display("\t %b %b %b %b", N, Z, C, V);
-        
-      $display("Testing SHIFT LEFT LOGICAL w. o. S");  
+        $display("\t %b %b %b %b\n", N, Z, C, V);
+      
+      $display("\t============ SLL ===========");  
+      $display("\tTesting SHIFT LEFT LOGICAL");  
         opcode = 6'b100101;  // A SHIFT LEFT B times w. o. S
         A_in = 32'h00000001;
         B_in = 32'b00000001;
         #100
         $display("\tShowing register flags");
         $display("\t N Z C V ");
-        $display("\t %b %b %b %b", N, Z, C, V);
+        $display("\t %b %b %b %b\n", N, Z, C, V);
         
-      $display("Testing SHIFT RIGHT LOGICAL");  
+      $display("\t============ SRL ===========");  
+      $display("\tTesting SHIFT RIGHT LOGICAL");  
         opcode = 6'b100110;  // A SRL B w. o. S
         A_in = 32'h00000001;
         B_in = 32'b00000001;
         #100
         $display("\tShowing register flags");
         $display("\t N Z C V ");
-        $display("\t %b %b %b %b", N, Z, C, V);
+        $display("\t %b %b %b %b\n", N, Z, C, V);
       
-      $display("Testing SHIFT RIGHT ARITHMETICALLY");  
+      $display("\t============ SRA ===========");
+      $display("\tTesting SHIFT RIGHT ARITHMETICALLY");  
         opcode = 6'b100111; // A SLA
         A_in = 32'h00000002;
         B_in = 32'b00000001;
         #100
-        $display("\tShowing register flags");
-        $display("\t N Z C V ");
-        $display("\t %b %b %b %b", N, Z, C, V);
+        $display("\t\tShowing register flags");
+        $display("\t\t N Z C V ");
+        $display("\t\t %b %b %b %b\n", N, Z, C, V);
       
-       $display("Testing ADD w. o. S");  
+       $display("|---------- Testing ADD / SUB function -----------|");
+       $display("\t============ ADD ===========");
+       $display("\tTest #1 - Testing ADD w. o. S, w.o. carry");  
         opcode = 6'b000000; // A ADD by  B 
         A_in = 32'h00000001;
         B_in = 32'b00000001;
         #100
-        $display("\tShowing register flags");
-        $display("\t N Z C V ");
-        $display("\t %b %b %b %b", N, Z, C, V);
+        $display("\t\tShowing register flags");
+        $display("\t\t N Z C V ");
+        $display("\t\t %b %b %b %b\n", N, Z, C, V);
       
-       $display("Testing ADD with S");  
+       $display("\tTest #2 - Testing ADD with S w.o carry");  
         opcode = 6'b010000; // A ADD by  B 
         A_in = 32'h00000001;
         B_in = 32'b00000001;
         #100
-        $display("\tShowing register flags");
-        $display("\t N Z C V ");
-        $display("\t %b %b %b %b", N, Z, C, V);
+        $display("\t\tShowing register flags");
+        $display("\t\t N Z C V ");
+        $display("\t\t %b %b %b %b\n", N, Z, C, V);
       
-            $display("\tTest #2 ADD with S");  
-            opcode = 6'b010000; // A ADD by  B 
-            A_in = 32'hffffffff;
-            B_in = 32'h00000001;
-            #100
-            $display("\t\tShowing register flags");
-            $display("\t\t N Z C V ");
-            $display("\t\t %b %b %b %b", N, Z, C, V);
-      
-         //oefmeaofmeaofmaf
-         
-       $display("Testing SUB without carry w. o. S");  
-        opcode = 6'b000100; // A SUB by B without carry  
-        A_in = 32'h00000002;
+        $display("\tTest #3 ADD w. o. S, with carry");  
+        opcode = 6'b001000; // A ADD by  B 
+        A_in = 32'hffffffff;
         B_in = 32'h00000001;
         #100
-        $display("\tShowing register flags");
-        $display("\t N Z C V ");
-        $display("\t %b %b %b %b", N, Z, C, V);
+        $display("\t\tShowing register flags");
+        $display("\t\t N Z C V ");
+        $display("\t\t %b %b %b %b\n", N, Z, C, V);
       
-       $display("Testing SUB without carry with S");  
-        opcode = 6'b010100; // A SUB by B  
-        A_in = 32'h01000001;
-        B_in = 32'hf0000001;
+        $display("\tTest #4 ADD with S, with carry");  
+        opcode = 6'b011000; // A ADD by  B 
+        A_in = 32'hffffffff;
+        B_in = 32'h00000001;
+        #100
+        $display("\t\tShowing register flags");
+        $display("\t\t N Z C V ");
+        $display("\t\t %b %b %b %b\n", N, Z, C, V);
+      
+       $display("\t===========SUBTRACT==========");
+       $display("\t-----------------------------");
+       $display("PLEASE NOTE THE CURRENT STATE OF THE STATUS REG");     
+       $display("\tTest#1 SUB w.o. carry w. o. S");  
+        opcode = 6'b000100;   
+        A_in = 32'h00000001;
+        B_in = 32'h00000002;
         #100
         $display("\tShowing register flags");
-        $display("\t N Z C V ");
-        $display("\t %b %b %b %b", N, Z, C, V);
+        $display("\t\tN Z C V ");
+        $display("\t\t%b %b %b %b\n", N, Z, C, V);
+  
+      $display("\tTest#2 SUB w.o. carry with S");  
+        opcode = 6'b010100; // A SUB by B  
+        A_in = 32'h00000001;
+        B_in = 32'h00000002;
+        #100
+        $display("\tShowing register flags");
+        $display("\t\t N Z C V ");
+        $display("\t\t %b %b %b %b\n", N, Z, C, V);
       
-            $display("\tTest #2 SUB with carry with S");  
-            opcode = 6'b011100; // A ADD by  B 
-            A_in = 32'hefffffff;
-            B_in = 32'hffffffff;
-            #100
-            $display("\t\tShowing register flags");
-            $display("\t\t N Z C V ");
-            $display("\t\t %b %b %b %b", N, Z, C, V);
+        $display("\tTest#3 SUB with carry w.o. S");  
+        opcode = 6'b001100; // A ADD by  B 
+        A_in = 32'hefffffff;
+        B_in = 32'hffffffff;
+        #100
+        $display("\t\tShowing register flags");
+        $display("\t\t N Z C V ");
+        $display("\t\t %b %b %b %b\n", N, Z, C, V);
+      
+        $display("\tTest#4 SUB with carry with S");  
+        opcode = 6'b011100; // A ADD by  B 
+        A_in = 32'hefffffff;
+        B_in = 32'hffffffff;
+        #100
+        $display("\t\tShowing register flags");
+        $display("\t\t N Z C V ");
+        $display("\t\t %b %b %b %b\n", N, Z, C, V);
       
     end
     

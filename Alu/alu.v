@@ -7,6 +7,7 @@
 ***************************************/
 module  ALU_32bit(output reg [31:0] result, output reg N, Z, C, V, input [31:0] A_in, B_in, input [5:0] opcode, input carry);
     reg [32:0] temp_res;
+    reg [32:0] sub_temp;
     
     always @ (A_in, B_in, opcode, carry)
         begin
@@ -19,7 +20,7 @@ module  ALU_32bit(output reg [31:0] result, output reg N, Z, C, V, input [31:0] 
                     begin
                         temp_res = A_in + B_in;
                         result = temp_res[31:0];
-                        //checkCarryFlag;   
+                        checkCarryFlag;   
                         checkAddOverflow;
                         checkNegFlag;
                         checkZeroFlag;
@@ -30,34 +31,39 @@ module  ALU_32bit(output reg [31:0] result, output reg N, Z, C, V, input [31:0] 
                     end
                 6'b011000:  //add with carry with S 
                     begin
-                        result = A_in + B_in + C; //Sure?
+                         
+                        temp_res = A_in + B_in + C; //Sure?
+                        result = temp_res[31:0];
                         checkAddOverflow;
                         checkNegFlag;
                         checkZeroFlag;
                         checkCarryFlag;
                     end
-                6'b000100:  //sub without carry w.o. S 
+                6'b000100:  //sub w.o. carry w.o. S 
                     begin
-                        result = A_in - B_in;
+                        result = A_in - B_in; 
                     end
                 6'b010100:  //sub without carry with S 
                     begin
-                        result = A_in - B_in - C; //Sure?
+                        sub_temp = A_in - B_in;
+                        result = sub_temp; 
                         checkSubOverflow;
                         checkNegFlag;
                         checkZeroFlag;
+                        checkBorrow_CarryFlag;
                     end
                 6'b001100:  //subx with carry w.o. S 
                     begin
-                        result = A_in - B_in - C;
+                        result = A_in - B_in - ~C;
                     end
                 6'b011100:  //subx with carry with S 
                     begin
-                        result = A_in - B_in - C; //Sure?
+                        sub_temp = A_in - B_in - ~C; //VERIFY
+                        result = sub_temp;
                         checkSubOverflow;
                         checkNegFlag;
                         checkZeroFlag;
-                        checkCarryFlag;
+                        checkBorrow_CarryFlag;
                     end
                 6'b000001:  // A AND B (bitwise) 
                     begin
@@ -184,6 +190,21 @@ module  ALU_32bit(output reg [31:0] result, output reg N, Z, C, V, input [31:0] 
             end 
            else C = 0;
         end
+     endtask
+     
+     task checkBorrow_CarryFlag;
+        begin
+            C = ~sub_temp[32];
+        end
+     endtask
+     
+     task clearFlags;
+      begin
+        C = 0;
+        V = 0;
+        Z = 0;
+        N = 0;
+      end
      endtask
      
 endmodule
