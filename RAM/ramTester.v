@@ -121,8 +121,8 @@ module  ram_tester;
         MFA <=0;
         #100;
         
-        $display("reading negative byte on 0x04");
-        addr = 8'h04;   //setting address
+        $display("reading negative byte on 0x06");
+        addr = 8'h06;   //setting address
         opcode = 6'h09; //setting opcode
         #30;
         MFA <=1'b1; //activate memory
