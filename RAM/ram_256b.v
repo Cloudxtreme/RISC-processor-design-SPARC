@@ -14,11 +14,13 @@ module  ram_256b(output reg [31:0] DataOut, output reg MFC, input MFA, input [5:
                 case(opcode)
                     6'b001001:  //ldsb load signed byte
                         begin
-                            DataOut[7:0] = {{24{ram[address][7]}}, ram[address]};
+                            #5 DataOut <= {{24{ram[address][7]}}, ram[address]};
+                            #3;
                         end
                     6'b001010:  //ldsh load signed half word
                         begin
-                            DataOut <= {{16{ram[address][15]}}, ram[address], ram[address+1] };
+                            #5 DataOut <= {{16{ram[address][7]}}, ram[address], ram[address+1] };
+                            #3;
                         end
                     6'b001000:  //ld load word (32 bit)
                         begin
@@ -29,7 +31,7 @@ module  ram_256b(output reg [31:0] DataOut, output reg MFC, input MFA, input [5:
                         end
                     6'b000001:  //ldub load unsigned byte
                         begin
-                            DataOut[7:0] = {{24{1'b0}}, ram[address]};
+                            DataOut <= {{24{1'b0}}, ram[address]};
                         end
                     6'b000010:  //lduh load unsinged half word
                         begin
