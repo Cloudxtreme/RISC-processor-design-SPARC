@@ -1,0 +1,19 @@
+|========= Test #1 ==========|
+	Writing 00001111 to R0
+	reading R0: 00000000
+|============ Test #2 ==============|
+	Selecting register #29 for writting of Window #1
+		CWP: 01, RFE: 0, RC: 11101
+	Writing 00001111 to R29 of Window #1
+		Clk: 1, RFE: 1
+		Clk: 0, CWP: 10, RB: 01101
+	Thus, R13 of Window 2 should equal R29 of Window #1
+	Reading R13 of Window #2: 00001111 
+|============= Test #3 ============|
+	Selecting register #29 for writting of Window #3
+		CWP: 11, RFE: 0, RC: 11101
+	Writing 00001111 to R29 of Window #3
+		Clk: 1, RFE: 1
+		Clk: 0, CWP: 00, RB: 01101
+	Thus, R13 of Window 0 should equal R29 of Window #3
+	Reading R13 of Window #0: 00001111 

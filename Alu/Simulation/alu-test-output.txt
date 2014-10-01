@@ -1,0 +1,108 @@
+|---------- Testing logical functions -----------|
+	============ AND ===========
+	Testing AND w. o. S
+	 Ain       Bin            opcode       result
+	00000000   11111111    000001    00000000
+	Testing AND with S
+	11110000   11111111    010001    11110000
+	Showing register flags
+	 N Z C V 
+	 0 0 x x
+	Testing NAND w. o. S
+	00000000   11111111    000101    ffffffff
+	Showing register flags
+	 N Z C V 
+	 0 0 x x
+
+	Testing NAND with S
+	00000000   11111111    010101    ffffffff
+	Showing register flags
+	 N Z C V 
+	 1 0 x x
+
+	============ XOR ===========
+	Testing XOR with S
+	00000000   11111111    010111    eeeeeeee
+	Showing register flags
+	 N Z C V 
+	 1 0 x x
+
+	Testing XOR with S
+	Showing register flags
+	 N Z C V 
+	 1 0 x x
+
+	============ SLL ===========
+	Testing SHIFT LEFT LOGICAL
+	00000001   00000001    100101    00000002
+	Showing register flags
+	 N Z C V 
+	 1 0 x x
+
+	============ SRL ===========
+	Testing SHIFT RIGHT LOGICAL
+	00000001   00000001    100110    00000000
+	Showing register flags
+	 N Z C V 
+	 1 0 x x
+
+	============ SRA ===========
+	Testing SHIFT RIGHT ARITHMETICALLY
+	00000002   00000001    100111    00000001
+		Showing register flags
+		 N Z C V 
+		 0 0 x x
+
+|---------- Testing ADD / SUB function -----------|
+	============ ADD ===========
+	Test #1 - Testing ADD w. o. S, w.o. carry
+	00000001   00000001    000000    00000002
+		Showing register flags
+		 N Z C V 
+		 0 0 x x
+
+	Test #2 - Testing ADD with S w.o carry
+	00000001   00000001    010000    00000002
+		Showing register flags
+		 N Z C V 
+		 0 0 0 0
+
+	Test #3 ADD w. o. S, with carry
+	ffffffff   00000001    001000    00000000
+		Showing register flags
+		 N Z C V 
+		 0 0 0 0
+
+	Test #4 ADD with S, with carry
+	ffffffff   00000001    011000    00000000
+		Showing register flags
+		 N Z C V 
+		 0 1 1 0
+
+	===========SUBTRACT==========
+	-----------------------------
+PLEASE NOTE THE CURRENT STATE OF THE STATUS REG
+	Test#1 SUB w.o. carry w. o. S
+	00000001   00000002    000100    ffffffff
+	Showing register flags
+		N Z C V 
+		0 1 1 0
+
+	Test#2 SUB w.o. carry with S
+	00000001   00000002    010100    ffffffff
+	Showing register flags
+		 N Z C V 
+		 1 0 0 0
+
+	Test#3 SUB with carry w.o. S
+	efffffff   ffffffff    001100    f0000001
+		Showing register flags
+		 N Z C V 
+		 1 0 0 0
+
+	Test#4 SUB with carry with S
+	efffffff   ffffffff    011100    f0000001
+		Showing register flags
+		 N Z C V 
+		 1 0 0 0
+

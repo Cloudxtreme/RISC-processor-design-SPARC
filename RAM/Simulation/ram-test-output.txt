@@ -1,0 +1,56 @@
+
+==============================================
+  Now testing Store Byte
+  Writing 2 Bytes 01h on 0x00 and 23h on 0x01
+==============================================
+
+==============================================
+  Now testing Store Halfword
+  Writing halfword 4567h on 0x02
+==============================================
+
+==============================================
+  Now testing Store Word
+  Writing word 89abcdef on 0x04
+==============================================
+
+==============================================
+  Now testing Load Unsigned Byte
+reading byte on 0x00
+data out = 00000001
+reading byte on 0x04
+data out = 00000012
+==============================================
+
+==============================================
+  Now testing Load Signed Byte
+reading positive byte on 0x00
+data out = 00000001
+reading negative byte on 0x06
+data out = ffffffbc
+==============================================
+
+==============================================
+  Now testing Load Unsigned Halfword
+reading halfword on 0x03
+data out = 00006712
+reading halfword on 0x06
+data out = 0000bcdf
+==============================================
+
+==============================================
+  Now testing Load Signed Halfword
+reading positive halfword on 0x02
+data out = 00004567
+reading negative halfword on 0x06
+data out = ffffbcdf
+==============================================
+
+==============================================
+  Now testing Load Word
+reading word on 0x00
+data out = 01234567
+reading word on 0x04
+data out = 123abcdf
+==============================================
+

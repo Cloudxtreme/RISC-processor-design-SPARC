@@ -1,0 +1,4 @@
+R7E  BE  RA[2:0] Clk  In  Aout
+ 1   1  xxx  1 00001111 xxxxxxxx
+ 1   0  xxx  0 00001111 xxxxxxxx
+ 1   0  111  1 00001111 00001111

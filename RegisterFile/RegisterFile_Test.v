@@ -21,7 +21,7 @@ module  RegisterFile_Test();
     
     initial #sim_time $finish;                  //simulation time
     initial begin
-     $display("|------- Test #1 ---------|");
+     $display("|========= Test #1 ==========|");
         Rin = 32'h00001111;
         RC = 5'b00000;
         RFE = 1'b0; //set active low
@@ -35,19 +35,45 @@ module  RegisterFile_Test();
         #100
         $display("\treading R0: %h", Aout);
         
-    $display("|------- Test #2 ---------|");
+    $display("|============ Test #2 ==============|");
+        $display("\tSelecting register #29 for writting of Window #1");
         CWP = 2'b01;
         RC = 5'b11101;
         RFE = 1'b0; //set active low
-        $display("\tWriting %h to R29 of W1", Rin);
+        $display("\t\tCWP: %b, RFE: %b, RC: %b", CWP,RFE,RC);
+        
         #100
+        $display("\tWriting %h to R29 of Window #1", Rin);
         Clk = 1'b1; //__/T
         RFE = 1'b1; //clear active low
+        $display("\t\tClk: %b, RFE: %b",Clk, RFE);
         #100 Clk = 1'b0;
         CWP = 2'b10;
         RB = 5'b01101;
+        $display("\t\tClk: %b, CWP: %b, RB: %b",Clk, CWP, RB);
         #100
-        $display("\tReading R13 of W2: %h ",Bout);
+        $display("\tThus, R13 of Window 2 should equal R29 of Window #1");
+        $display("\tReading R13 of Window #2: %h ",Bout);
+        
+     $display("|============= Test #3 ============|");
+        $display("\tSelecting register #29 for writting of Window #3");
+        CWP = 2'b11;
+        RC = 5'b11101;
+        RFE = 1'b0; //set active low
+        $display("\t\tCWP: %b, RFE: %b, RC: %b", CWP,RFE,RC);
+        
+        #100
+        $display("\tWriting %h to R29 of Window #3", Rin);
+        Clk = 1'b1; //__/T
+        RFE = 1'b1; //clear active low
+        $display("\t\tClk: %b, RFE: %b",Clk, RFE);
+        #100 Clk = 1'b0;
+        CWP = 2'b00;
+        RB = 5'b01101;
+        $display("\t\tClk: %b, CWP: %b, RB: %b",Clk, CWP, RB);
+        #100
+        $display("\tThus, R13 of Window 0 should equal R29 of Window #3");
+        $display("\tReading R13 of Window #0: %h ",Bout);
       end
  //    initial begin
   //      $display ("Rin  BE3  RA[4:0]  WE    in     Aout     AxOut");
