@@ -137,10 +137,6 @@ module  ALU_32bit(output reg [31:0] result, output reg N, Z, C, V, input [31:0] 
                 6'b100111:  //Shift right arithmetic
                     begin
                         result = A_in >>> B_in[31:0];
-                        //carry?
-                        //no V flag
-                        checkNegFlag;
-                        checkZeroFlag;
                     end
                 endcase
              
