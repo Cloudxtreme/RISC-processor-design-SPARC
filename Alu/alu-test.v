@@ -6,7 +6,7 @@ module  test_alu_32bit;
     reg [0:0] carry;
     
     parameter sim_time = 10000;                   //simulation time
-    ALU_32bit alu (result, N, Z, C, V, A_in, B_in, opcode, carry); //syntax for instanciation
+    ALU_32bit alu (result, N, Z, V, C, A_in, B_in, opcode, carry); //syntax for instanciation
     initial #sim_time $finish;                  //simulation time
     initial begin
        //AND TEST    
