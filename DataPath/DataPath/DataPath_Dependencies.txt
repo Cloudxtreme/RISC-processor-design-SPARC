@@ -14,3 +14,4 @@
 ../nPC_ADD/nPC_ADD.v
 ../tt_Aux/tt_Aux.v
 ./DataPath.v
+./DataPath_Test.v

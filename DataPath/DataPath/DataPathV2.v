@@ -1,13 +1,12 @@
 /**************************************
-* Module: DataPath
+* Module: DataPathV2
 * Date:2014-10-11  
 * Author: josediaz     
 *
-* Description: The big boss
+* Description: DataPath with IT - integrated tester
 ***************************************/
-module  DataPath(output reg [31:0] IR, PSR, MAR, MDR, PC, nPC, TBR, WIM, output reg [0:0] MFC, input [0:0] IRE, MDRE, TBRE, nPCE, PCE, MARE, nPC_ADD, nPC_ADDSEL, TB_ADD, MFA, MOP_SEL, MAR_SEL, PSRE, BAUX, RFE, RA_SEL, MDR_SEL, DISPSEL, AOP_SEL, WIME, ttAUX, ET, PSR_SUPER, PSR_PREV_SUP, ClrPC, Clk, input [1:0] nPC_SEL, ALU_SEL, CIN_SEL, RC_SEL, input [4:0] CWP, input [5:0] OP1, input [19:0] TBA_IN, input [31:0] WIM_IN);
-//(output reg [31:0] IR, PSR, MAR, MDR, PC, nPC, TBR, WIM, output reg [0:0] MFC, input [0:0] IRE, MDRE, TBRE, nPCE, PCE, MARE, nPC_ADD, nPC_ADDSEL, TB_ADD, MFA, MOP_SEL, MAR_SEL, PSRE, BAUX, RFE, RA_SEL, MDR_SEL, DISPSEL, AOP_SEL, WIME, ttAUX, ET, PSR_SUPER, PSR_PREV_SUP, ClrPC, Clk, input [1:0] nPC_SEL, ALU_SEL, CIN_SEL, RC_SEL, input [4:0] CWP, input [5:0] OP1, input [19:0] TBA_IN, input [31:0] WIM_IN);
-   
+module  DataPathV2(output reg [31:0] IR, PSR, MAR, MDR, PC, nPC, TBR, WIM, output reg [0:0] MFC, input [0:0] IRE, MDRE, TBRE, nPCE, PCE, MARE, nPC_ADD, nPC_ADDSEL, TB_ADD, MFA, MOP_SEL, MAR_SEL, PSRE, BAUX, RFE, RA_SEL, MDR_SEL, DISPSEL, AOP_SEL, WIME, ttAUX, ET, PSR_SUPER, PSR_PREV_SUP, ClrPC, Clk, input [1:0] nPC_SEL, ALU_SEL, CIN_SEL, RC_SEL, input [4:0] CWP, input [5:0] OP1, input [19:0] TBA_IN, input [31:0] WIM_IN);
+
     //-----------CREATING ALU --------------//
     wire [0:0] N, Z, V, C, Carry;
     wire [31:0] alu_out;
@@ -128,12 +127,7 @@ module  DataPath(output reg [31:0] IR, PSR, MAR, MDR, PC, nPC, TBR, WIM, output 
     wire [31:0] CIN_MUX_out;
     mux_4x1_32bit CIN_MUX(CIN_MUX_out, CIN_SEL, MDR_out, alu_out, nPC_out, PC_out);
     
-    initial begin               //simulation time
-        ram.ram[0] <= 8'h9C;
-        ram.ram[1] <= 8'h04;
-        ram.ram[2] <= 8'h40;
-        ram.ram[3] <= 8'h12;
-     end
+    
     
     //-------//
     always @ (*) 
@@ -148,6 +142,16 @@ module  DataPath(output reg [31:0] IR, PSR, MAR, MDR, PC, nPC, TBR, WIM, output 
         TBR = TBR_out;
         WIM = WIM_out;
        end
-    
+
+   initial begin               //simulation time
+        ram.ram[0] <= 8'h9C;
+        ram.ram[1] <= 8'h04;
+        ram.ram[2] <= 8'h40;
+        ram.ram[3] <= 8'h12;
+        
+        
+        
+     end 
+
 endmodule
 
