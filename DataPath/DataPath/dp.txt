@@ -13,5 +13,5 @@
 ../branch_Aux/branch_Aux.v
 ../nPC_ADD/nPC_ADD.v
 ../tt_Aux/tt_Aux.v
-./DataPathV3.v
+./DataPathV4.v
 
