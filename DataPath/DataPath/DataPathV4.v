@@ -9,9 +9,9 @@ module  DataPathV4();
 
     integer i;
     reg [31:0] buffer[0:255];
-    reg [31:0] IR, PSR, MAR, MDR, PC, nPC, TBR, WIM, MDR_AUX, MAR_AUX;
+    reg [31:0] IR, PSR, MAR, MDR, PC, nPC, TBR, WIM, MDR_AUX, MAR_AUX, tQ_out;
     reg [0:0] MFC;
-    reg [0:0] IRE, MDRE, TBRE, nPCE, PCE, MARE, nPC_ADD, 
+    reg [0:0] IRE, MDRE, TBRE, nPCE, PCE, MARE, nPC_ADD,tQE,tQClr, 
     nPC_ADDSEL, TB_ADD, MFA, MOP_SEL, PSRE, BAUX, 
     RFE, RA_SEL, DISP_SEL, AOP_SEL, WIME, ttAUX, ET, 
     PSR_SUPER, PSR_PREV_SUP, ClrPC, Clk;
@@ -19,7 +19,8 @@ module  DataPathV4();
     reg [4:0] CWP;
     reg [5:0] OP1;
     reg [19:0] TBA_IN;
-    reg [31:0] WIM_IN;
+    reg [7:0] tt_IN;
+    reg [31:0] WIM_IN, tQ_IN;
 
     //-----------CREATING ALU --------------//
     wire [0:0] N, Z, V, C, Carry;
@@ -64,6 +65,10 @@ module  DataPathV4();
     //buiding WIM
     wire [31:0] WIM_out;
     register_32bit_le_aclr WIM_REG(WIM_out,WIM_IN,WIME,1,Clk);
+    
+    //building trap Queue
+    wire [31:0] trapQ_out;
+    register_32bit_le_aclr trapQueue(trapQ_out,tQ_IN,tQE,tQClr,Clk);
     
     
     //--------- Special Components* -----//
