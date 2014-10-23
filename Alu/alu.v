@@ -5,11 +5,11 @@
 *
 * Description: 32 bit ALU for sparc implementation.
 ***************************************/
-module  ALU_32bit(output reg [31:0] result, output reg N, Z, V, C, input [31:0] A_in, B_in, input [5:0] opcode, input carry);
+module  ALU_32bit(output reg [31:0] result, output reg N, Z, V, C, input [31:0] A_in, B_in, input [5:0] opcode, input carry, ALUE);
     reg [32:0] temp_res;//reg N, Z, C, V
     reg [32:0] sub_temp;
     
-    always @ (A_in, B_in, opcode, carry)
+    always @ (ALUE)
         begin
             case(opcode)
                 6'b000000:  //add w.o. S
