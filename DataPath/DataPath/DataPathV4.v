@@ -14,11 +14,11 @@ module  DataPathV4();
     reg [0:0] IRE, MDRE, TBRE, nPCE, PCE, MARE, nPC_ADD,tQE,tQClr, 
     nPC_ADDSEL, TB_ADD, MFA, MOP_SEL, PSRE, BAUX, 
     RFE, RA_SEL, DISP_SEL, AOP_SEL, WIME, ttAUX, ET, 
-    PSR_SUPER, PSR_PREV_SUP, ClrPC, Clk;
+    PSR_SUPER, PSR_PREV_SUP, ClrPC, Clk, nPCClr, PSR_SEL, TBA_SEL;
     reg [1:0] nPC_SEL, ALU_SEL, CIN_SEL, RC_SEL, MAR_SEL, MDR_SEL;
     reg [4:0] CWP;
     reg [5:0] OP1;
-    reg [19:0] TBA_IN;
+    reg [24:0] TBA_IN;
     reg [7:0] tt_IN;
     reg [31:0] WIM_IN, tQ_IN;
 
@@ -51,7 +51,7 @@ module  DataPathV4();
      
     //buiding nPC
     wire [31:0] nPC_out;
-    register_32bit_le_aclr nPC_REG(nPC_out,nPC_MUX_Out,nPCE,1,Clk);
+    register_32bit_le_aclr nPC_REG(nPC_out,nPC_MUX_Out,nPCE,nPCClr,Clk);
    
     //buiding PC
     wire [31:0] PC_out;
@@ -79,9 +79,9 @@ module  DataPathV4();
     branch_Aux branchAux(branchAux_out,PC_out,IR_out[29:0],BAUX,DISPSEL);
     
     //building tt_Aux
-    //tt_Aux(output reg[7:0] out, input wire[31:0] aluOut, input ttAux);
-    wire [7:0] ttAux_out;
-    tt_Aux ttAux(ttAux_out, alu_out, ttAUX);
+    //tt_Aux(output reg[2:0] out, input wire[5:0] trapQout, input ttAux);
+    wire [2:0] ttAux_out;
+    tt_Aux ttAux(ttAux_out, trapQ_out[5:0], ttAUX);
     
     //building nPcADD
     //nPC_ADD(output reg [31:0] out, input [31:0] pc, input [0:0] Sel, nPC_ADD);
@@ -146,6 +146,12 @@ module  DataPathV4();
     //buidling CINMUX
     wire [31:0] CIN_MUX_out;
     mux_4x1_32bit CIN_MUX(CIN_MUX_out, CIN_SEL, MDR_out, alu_out, nPC_out, PC_out);
+    
+    //mux_2x1_32bit(output reg[31:0] Y,input wire[0:0] s, input wire[31:0] I1, I0);
+    //buidling PSR_MUX
+    wire [31:0] PSR_MUX_out;
+    mux_2x1_32bit PSR_MUX(PSR_MUX_out ,PSR_SEL, {{26{1'b0}},OP1}, {{26{1'b0}},IR_out[24:19]});
+    
     
     
     
@@ -342,9 +348,9 @@ module  DataPathV4();
   RA_SEL = 0;
     #500
     
-    $display("RA = %h",RF_Aout);
+    $display("RA = r%d",RF_Aout);
     #100
-    $display("RB = %h",RF_Bout);
+    $display("RB = r%d",RF_Bout);
   
   #100
     $display("\nr17 = r17+r18");
