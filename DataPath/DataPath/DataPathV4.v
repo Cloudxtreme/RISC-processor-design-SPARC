@@ -19,8 +19,8 @@ module  DataPathV4();
     reg [4:0] CWP;
     reg [5:0] OP1;
     reg [24:0] TBA_IN;
-    reg [7:0] tt_IN;
-    reg [31:0] WIM_IN, tQ_IN;
+    reg [5:0] tQ_IN;
+    reg [31:0] WIM_IN;
 
     //-----------CREATING ALU --------------//
     wire [0:0] N, Z, V, C, Carry;
@@ -38,7 +38,7 @@ module  DataPathV4();
     //buiding PSR  {{24{ram[address][7]}}, ram[address]};
     //reg [31:0] PSR_in = ; 
     wire [31:0] PSR_out;
-    register_32bit_le_aclr PSR_REG(PSR_out,{{8{1'b0}},N, Z, V, C,{12{1'b0}},PSR_SUPER, PSR_PREV_SUP,ET,CWP},PSRE,1,Clk);
+    register_32bit_le_aclr PSR_REG(PSR_out,{{8{1'b0}},N, Z, V, C,{12{1'b0}},PSR_MUX_out[7:0]},PSRE,1,Clk);
     
     //buiding MAR
     
@@ -60,7 +60,7 @@ module  DataPathV4();
     //buiding TBR
     //reg [31:0] TBR_in = {{TBA_IN},{ttAux_out},{4{1'b0}} };
     wire [31:0] TBR_out;
-    register_32bit_le_aclr TBR_REG(TBR_out,{ {TBA_IN},{ttAux_out},{4{1'b0}} },TBRE,1,Clk);
+    register_32bit_le_aclr TBR_REG(TBR_out,{ TBA_MUX_out[31:7],{ttAux_out},{4{1'b0}} },TBRE,1,Clk);
     
     //buiding WIM
     wire [31:0] WIM_out;
@@ -68,7 +68,7 @@ module  DataPathV4();
     
     //building trap Queue
     wire [31:0] trapQ_out;
-    register_32bit_le_aclr trapQueue(trapQ_out,tQ_IN,tQE,tQClr,Clk);
+    register_32bit_le_aclr trapQueue(trapQ_out,{{26{1'b0}},tQ_IN},tQE,tQClr,Clk);
     
     
     //--------- Special Components* -----//
@@ -148,11 +148,14 @@ module  DataPathV4();
     mux_4x1_32bit CIN_MUX(CIN_MUX_out, CIN_SEL, MDR_out, alu_out, nPC_out, PC_out);
     
     //mux_2x1_32bit(output reg[31:0] Y,input wire[0:0] s, input wire[31:0] I1, I0);
-    //buidling PSR_MUX
+    //buidling TBA_MUX
+    wire [31:0] TBA_MUX_out;
+    mux_2x1_32bit TBA_MUX(TBA_MUX_out ,TBA_SEL, {TBA_IN,{7{1'b0}}}, {TBR_out[31:7],{7{1'b0}}});
+    
+    //mux_2x1_32bit(output reg[31:0] Y,input wire[0:0] s, input wire[31:0] I1, I0);
+    //buidling TBA_MUX
     wire [31:0] PSR_MUX_out;
-    mux_2x1_32bit PSR_MUX(PSR_MUX_out ,PSR_SEL, {{26{1'b0}},OP1}, {{26{1'b0}},IR_out[24:19]});
-    
-    
+    mux_2x1_32bit PSR_MUX(PSR_MUX_out ,PSR_SEL, {{24{1'b0}},PSR_SUPER, PSR_PREV_SUP,ET,CWP}, {{24{1'b0}},PSR_out[7:0]});
     
     
     //-------//
