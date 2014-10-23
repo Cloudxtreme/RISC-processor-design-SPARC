@@ -8,7 +8,7 @@
 module  DataPathV4();
 
     integer i;
-    reg [31:0] buffer[0:255];
+    reg [31:0] buffer[0:63];
     reg [31:0] IR, PSR, MAR, MDR, PC, nPC, TBR, WIM, MDR_AUX, MAR_AUX, tQ_out;
     reg [0:0] MFC;
     reg [0:0] IRE, MDRE, TBRE, nPCE, PCE, MARE, nPC_ADD,tQE,tQClr, IRClr, 
@@ -116,7 +116,7 @@ module  DataPathV4();
     //mux_4x1_32bit(output reg[31:0] Y,input wire[1:0] s, input wire[31:0] I3, I2, I1, I0);
     // buidling nPC_MUX
     wire [31:0] nPC_MUX_Out;
-    mux_4x1_32bit nPC_MUX(nPC_MUX_Out, nPC_SEL, alu_out, branchAux_out, TB_ADD_out, nPC_ADD_out); 
+    mux_4x1_32bit nPC_MUX(nPC_MUX_Out, nPC_SEL, alu_out, branchAux_out, TBR_out, nPC_ADD_out); 
     
     //mux_2x1_32bit(output reg[31:0] Y,input wire[0:0] s, input wire[31:0] I1, I0);
     //buidling MOP_MUX
@@ -159,7 +159,7 @@ module  DataPathV4();
     mux_2x1_32bit TBA_MUX(TBA_MUX_out ,TBA_SEL, {TBA_IN,{7{1'b0}}}, {TBR_out[31:7],{7{1'b0}}});
     
     //mux_2x1_32bit(output reg[31:0] Y,input wire[0:0] s, input wire[31:0] I1, I0);
-    //buidling TBA_MUX
+    //buidling PSR_MUX
     wire [31:0] PSR_MUX_out;
     mux_2x1_32bit PSR_MUX(PSR_MUX_out ,PSR_SEL, {{24{1'b0}},PSR_SUPER, PSR_PREV_SUP,ET,CWP}, {{24{1'b0}},PSR_out[7:0]});
     
@@ -205,13 +205,81 @@ module  DataPathV4();
 //        MFA = 0;
 
        i = 0;
+       
+       
         $readmemh("file2.dat",buffer);
         $display("  Preloading memory from file");
         OP1 = 6'h04;
         MOP_SEL  = 1;
         MDR_SEL = 2;
         MAR_SEL = 2;
-        #500
+       
+        CWP = 1;
+        
+           MDR_AUX = 15;    
+        #100
+        MDRE = 0;
+        #100
+        Clk = 1;
+        #100
+        Clk = 0;
+        MDRE = 1;
+        #100
+        
+        $display("\nStoring MDR in r17");
+    RC_SEL = 2'b10;
+    #500
+    
+    CIN_SEL = 3;
+    #500
+    
+    #100
+    RFE = 0;
+    #500
+    Clk = 1;
+    #500
+    Clk = 0;
+    RFE = 1;
+        
+        
+        #50
+        MDR_AUX = 17;
+        #100
+        MDRE = 0;
+        #100
+        Clk = 1;
+        #100
+        Clk = 0;
+        MDRE = 1;
+        #50
+         #100
+    $display("Storing MDR in r18");
+    RC_SEL = 2'b01;
+    #500
+  
+    CIN_SEL = 3;
+    #500
+    
+    #100
+    RFE = 0;
+    #500
+    Clk = 1;
+    #500
+    Clk = 0;
+    RFE = 1;
+    #100
+  RA_SEL = 0;
+    #500
+        
+        
+        
+        RC_SEL = 1;
+        #100
+        RFE = 0;
+        #100
+        Clk = 1;
+        #100
+        Clk = 0;
         
         MDRE = 1;
         Clk = 0;
@@ -229,10 +297,10 @@ module  DataPathV4();
         #500
         MFA = 1;
         #1000
-        $display("MFA: %b", MFA);
+        $display("MFA: %b Memory Done!", MFA);
         MFA = 0;
         #500
-        $display("MDR_OUT: %h", MDR_out);
+        //$display("MDR_OUT: %h", MDR_out);
        
         //==================
         // crap test from here on
@@ -367,10 +435,10 @@ module  DataPathV4();
     OP1 = 6'h08;
     
     #500
-    $display("\t>>> debug ::: OP1: %b",OP1 );
-    $display("\t>>> debug ::: MAR: %h",MAR_out );
-    $display("\t>>> debug ::: MOP_MUX_OUT: %h", MOP_MUX_out);
-    $display("\t>>> debug ::: MDR_OUT: %h",MDR_out );
+//    $display("\t>>> debug ::: OP1: %b",OP1 );
+//    $display("\t>>> debug ::: MAR: %h",MAR_out );
+//    $display("\t>>> debug ::: MOP_MUX_OUT: %h", MOP_MUX_out);
+//    $display("\t>>> debug ::: MDR_OUT: %h",MDR_out );
     
     $display("FETCH 3");
     #500
@@ -384,8 +452,8 @@ module  DataPathV4();
     MDRE = 1;
         
     #1000
-    $display("\t>>> debug ::: MFC: %b",MFC);
-    $display("\t>>> debug ::: MDR_OUT: %h",MDR_out );
+    //$display("\t>>> debug ::: MFC: %b",MFC);
+    //$display("\t>>> debug ::: MDR_OUT: %h",MDR_out );
     #1000
     $display("FETCH 4");
     #500
@@ -413,6 +481,392 @@ module  DataPathV4();
     $display("FETCH DONE");
     $display("\t>>> debug ::: IR: %h\n", IR_out);
     
+    
+    $display("ALop 1");
+    
+    #500
+    Clk = 0;
+    #500
+    Clk = 1;
+    #500
+    
+    CIN_SEL <= 2;
+    RA_SEL <= 0;
+    RC_SEL <= 0;
+    AOP_SEL <= 0;
+    ALU_SEL <= 0;
+    #500
+     $display("ALop 2");
+    #500
+    Clk = 0;
+    #500
+    Clk = 1;
+    #500
+       
+    
+    RFE = 0;
+    ALUE = 1;
+    
+    #500
+    
+     $display("ALop 3");
+    #500
+    Clk = 0;
+    #500
+    Clk = 1;
+    #500
+    
+    RFE = 1;
+    ALUE = 0;
+    
+    #500
+    $display("ALop Done");
+    //23-20
+    $display("\t>>> debug ::: ALU_out: %h", alu_out);
+    $display("\t>>> debug ::: PSR[23:20]: %b\n", PSR_out[23:20]);
+    
+    
+    $display("nPC_Update_1");
+    #500
+    Clk = 0;
+    #500
+    Clk = 1;
+    #500
+    
+    PCE <= 0;
+    
+    #500
+    $display("nPC_Update_2");
+    #500
+    Clk = 0;
+    #500
+    Clk = 1;
+    #500
+    
+    PCE <= 1; nPC_ADDSEL <= 0; nPC_SEL <= 0;
+    
+    #500
+    $display("nPC_Update_3");
+    #500
+    Clk = 0;
+    #500
+    Clk = 1;
+    #500
+    nPC_ADD = 1;
+    nPCE = 0; 
+    
+    #500
+    $display("nPC_Update_4");
+    #500
+    Clk = 0;
+    #500
+    Clk = 1;
+    #500
+    
+    nPCE = 1; nPC_ADD = 0;
+    
+    #500
+    $display("nPC_Update Done!");
+    $display("\t>>> debug ::: PC: %h - nPC: %h\n", PC_out, nPC_out);
+    
+    #500
+    Clk = 0;
+    RFE = 1;
+        
+        MDR_SEL <= 2;
+        #50
+        MDR_AUX = 32'h3c800005;
+        #100
+        MDRE = 0;
+        #100
+        Clk = 1;
+        #100
+        Clk = 0;
+        #100
+        IRE = 0;
+        #100
+        Clk = 1;
+        #100
+        IRE = 1;
+    
+    #500
+    $display("branch instruction wt. cond=false and a=1");
+    $display("branch 1");
+    #500
+    Clk = 0;
+    MDRE = 1;
+    #500
+    Clk = 1;
+    #500
+    
+    PCE <=0;
+    
+    #500
+    $display("branch 2");
+    #500
+    Clk = 0;
+    #500
+    Clk = 1;
+    #500
+    
+    PCE <=1;
+    
+    #500
+    $display("branch F1");
+    #500
+    Clk = 0;
+    #500
+    Clk = 1;
+    #500
+    
+    nPC_ADDSEL <= 1; nPC_SEL <= 0;
+    
+    #500
+    $display("branch F2");
+    #500
+    Clk = 0;
+    #500
+    Clk = 1;
+    #500
+    
+    nPCE <= 0; nPC_ADD <= 1;
+    
+    #500
+    $display("branch F3");
+    #500
+    Clk = 0;
+    #500
+    Clk = 1;
+    #500
+    
+    nPCE <= 1; nPC_ADD <= 0;
+    
+    #500
+    $display("branch false with a=1 done");
+    $display("\t>>> debug ::: PC: %h - nPC: %h\n", PC_out, nPC_out);
+    
+     #500
+    $display("branch instruction wt. cond=true and disp22=5");
+    $display("branch 1");
+    #500
+    Clk = 0;
+    #500
+    Clk = 1;
+    #500
+    
+    PCE <=1;
+    
+     #500
+    $display("branch T1");
+    #500
+    Clk = 0;
+    #500
+    Clk = 1;
+    #500
+    
+    nPC_SEL <= 2; DISP_SEL <= 0;
+    
+     #500
+    $display("branch T2");
+    #500
+    Clk = 0;
+    #500
+    Clk = 1;
+    #500
+    
+    nPCE <= 0; BAUX <= 1;
+    
+    #500
+    $display("branch T3");
+    #500
+    Clk = 0;
+    #500
+    Clk = 1;
+    #500
+    
+    nPCE <= 1; BAUX <= 0;
+    
+     #500
+    $display("branch true is done");
+    $display("\t>>> debug ::: PC: %h - nPC: %h\n", PC_out, nPC_out);
+    
+    #500
+    Clk = 0;
+    RFE = 1;
+        PSR_SEL <= 1;
+        TBA_SEL <= 1;
+        MDR_SEL <= 2;
+        #50
+        PSR_SUPER <= 0;
+        PSR_PREV_SUP <= 1;
+        ET <= 1;
+        CWP <= 1;
+        TBA_IN <= 25'h0000000;
+        MDR_AUX = 32'h3c800005;
+        tQ_IN = 6'b001000;
+        #100
+        TBRE = 0;
+        MDRE = 0;
+        PSRE = 0;
+        tQE = 0;
+        #100
+        Clk = 1;
+        #100
+        Clk = 0;
+        #100
+        IRE = 0;
+        #100
+        Clk = 1;
+        #100
+        IRE = 1;
+    
+    #500
+    $display("trap instruction wt. cond=true");
+    $display("\t>>> debug ::: PSR[7:0]: %b\n", PSR_out[7:0]);
+    $display("trap 1");
+    #500
+    Clk = 0;
+    MDRE = 1;
+    TBRE = 1;
+    tQE = 1;
+    TBA_SEL = 0;
+    PSRE = 1;
+    #500
+    Clk = 1;
+    #500
+    
+    // check cond
+    tQ_IN = 6'b001000;
+    
+    #500
+    $display("trap 2");
+    #500
+    Clk = 0;
+    #500
+    Clk = 1;
+    #500
+    
+    tQE <=0;
+    
+     #500
+    $display("trap 3");
+    #500
+    Clk = 0;
+    #500
+    Clk = 1;
+    #500
+    
+    tQE <=1;
+    
+    $display("\t>>> debug ::: TBR: %b\n", TBR_out);
+     #500
+    $display("Trap Generated!");
+    $display("\t>>> debug ::: trapQ: %b\n", trapQ_out[5:0]);
+     #500
+    $display("trapQ 1");
+    #500
+    Clk = 0;
+    #500
+    Clk = 1;
+    #500
+    
+    PSR_SEL <= 1;
+    PSRE <= 0;
+    PSR_SUPER <= 1;
+        PSR_PREV_SUP <= 0;
+        ET <= 0;
+        CWP <= 0;
+        RFE <= 0;
+        CIN_SEL <= 0;
+        RC_SEL <= 2;
+        ttAUX <= 1;
+        
+        $display("trapQ 2");
+    #500
+    Clk = 0;
+    #500
+    Clk = 1;
+    #500
+        PSRE <= 1;
+        PSR_SEL <= 0;
+        RFE <= 1;
+        
+        
+       #500 
+            $display("trapQ 3");
+    #500
+    Clk = 0;
+    #500
+    Clk = 1;
+    #500
+    
+        RFE <= 0;
+        CIN_SEL <= 1;
+        RC_SEL <= 1;
+        
+        nPC_SEL <= 1;
+      #500  
+      $display("\t>>> debug ::: trapQ: %b\n", ttAux_out[2:0]);
+            $display("trapQ 4");
+    #500
+    Clk = 0;
+    #500
+    Clk = 1;
+    #500   
+     nPCE <= 0;
+     RFE <= 1;
+     
+     
+     #500
+       $display("trapQ 5");
+    #500
+    Clk = 0;
+    #500
+    Clk = 1;
+    #500   
+    
+    nPCE <= 1;
+    PCE <= 0;
+    
+    #500
+     $display("trapQ 6");
+    #500
+    Clk = 0;
+    #500
+    Clk = 1;
+    #500   
+    
+    nPC_ADDSEL <= 0;
+    nPC_SEL <= 0;
+    PCE <= 1;
+    
+    #500
+     $display("trapQ 6");
+    #500
+    Clk = 0;
+    #500
+    Clk = 1;
+    #500   
+    
+    nPC_ADD <= 1;
+    nPCE <= 0;
+    
+   #500 
+      $display("trapQ 6");
+    #500
+    Clk = 0;
+    #500
+    Clk = 1;
+    #500   
+    
+    nPC_ADD <= 0;
+    nPCE <= 1;
+    
+    $display("trap true is done");
+    //$display("\t>>> debug ::: PC: %h - nPC: %h\n", PC_out, nPC_out);
+   
+    //$display("\t>>> debug ::: TBR: %b\n", TBR_out);
+    //$display("\t>>> debug ::: PSR[7:0]: %b\n", PSR_out[7:0]);
      end 
 
 endmodule
