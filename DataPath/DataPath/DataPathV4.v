@@ -224,17 +224,19 @@ module  DataPathV4();
         Clk = 1;
         #500
         Clk = 0;
-        #100
-        MDRE = 1;
-        #100
-        MFA = 1;
         #500
+        MDRE = 1;
+        #500
+        MFA = 1;
+        #1000
+        $display("MFA: %b", MFA);
         MFA = 0;
-        
+        #500
+        $display("MDR_OUT: %h", MDR_out);
        
         //==================
         // crap test from here on
-    $display("\ndataPath test");
+    $display("\n========DataPath test========");
     $display("Reset 1");
     #500
     IRE <= 1;
@@ -333,7 +335,7 @@ module  DataPathV4();
     
     #500
     $display("RESET DONE");
-    $display("PC: %h - nPC: %h\n", PC_out, nPC_out); 
+    $display("\t>>> debug ::: PC: %h - nPC: %h\n", PC_out, nPC_out); 
     
     #500
     $display("FETCH 1");
@@ -343,8 +345,11 @@ module  DataPathV4();
     Clk = 1;
     #500
     
-    MARE <= 0;
-    MAR_SEL <= 1;
+    MARE = 0;
+    #1000
+    MAR_AUX = 4;
+    #1000
+    MAR_SEL = 2;
     
     #500
     $display("FETCH 2");
@@ -354,14 +359,19 @@ module  DataPathV4();
     Clk = 1;
     #500
   
-    MARE <= 1;
-    MOP_SEL <= 1;
-    MDR_SEL <= 0;
-    OP1 <= 6'h08;
+    MARE = 1;
+    MOP_SEL = 1;
+    #1000
+    MDR_SEL = 0;
+    #1000
+    OP1 = 6'h08;
     
     #500
-    $display(">>> debug >>>. MAR: %h",MAR_out );
-    $display(">>> debug >>>. MOP_MUX_OUT: %h", MOP_MUX_out);
+    $display("\t>>> debug ::: OP1: %b",OP1 );
+    $display("\t>>> debug ::: MAR: %h",MAR_out );
+    $display("\t>>> debug ::: MOP_MUX_OUT: %h", MOP_MUX_out);
+    $display("\t>>> debug ::: MDR_OUT: %h",MDR_out );
+    
     $display("FETCH 3");
     #500
     Clk = 0;
@@ -369,12 +379,14 @@ module  DataPathV4();
     Clk = 1;
     #500
     
-    MDRE <= 0;
-    MFA <= 1;
+    //MDRE = 0;
+    MFA = 1;
+    MDRE = 1;
         
     #1000
-    $display(">>> debug >>>. MFC: %b",MFC);
-    $display(">>> debug >>>. RAM: %h",ram_dataOut );
+    $display("\t>>> debug ::: MFC: %b",MFC);
+    $display("\t>>> debug ::: MDR_OUT: %h",MDR_out );
+    #1000
     $display("FETCH 4");
     #500
     Clk = 0;
@@ -382,11 +394,12 @@ module  DataPathV4();
     Clk = 1;
     #500
     
-    IRE <= 0;
-    MDRE <= 1;
-    MFA <= 0;
+    IRE = 0;
+    MFA = 0;
+    MDRE = 1;
     
     #500
+    //$display("\t>>> debug ::: RAM_OUT: %h",MDR_out );
     $display("FETCH 5");
     #500
     Clk = 0;
@@ -398,7 +411,7 @@ module  DataPathV4();
     
     #500
     $display("FETCH DONE");
-    $display("IR: %h\n", IR_out);
+    $display("\t>>> debug ::: IR: %h\n", IR_out);
     
      end 
 
