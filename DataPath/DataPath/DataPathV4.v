@@ -342,9 +342,9 @@ module  DataPathV4();
   RA_SEL = 0;
     #500
     
-    $display("RA = r%d",RF_Aout);
+    $display("RA = %h",RF_Aout);
     #100
-    $display("RB = r%d",RF_Bout);
+    $display("RB = %h",RF_Bout);
   
   #100
     $display("\nr17 = r17+r18");
