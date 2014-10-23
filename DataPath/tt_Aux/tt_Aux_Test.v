@@ -16,7 +16,7 @@ module  tt_Aux_Test();
     initial begin
      $display("|========= Testing tt_Aux ==========|");
        
-       in = 1;
+       in = 6'b001000;
        #10
        sig = 1;
        #10

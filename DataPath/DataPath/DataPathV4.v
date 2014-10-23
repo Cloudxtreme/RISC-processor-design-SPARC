@@ -66,7 +66,7 @@ module  DataPathV4();
     
     wire [0:0] TBRE_afterGate;
     nor(TBRE_afterGate,!TBRE,ttAUX);
-    register_32bit_le_aclr TBR_REG(TBR_out,{ TBA_MUX_out[31:7],{ttAux_out},{4{1'b0}} },TBRE_afterGate,1,Clk);
+    register_32bit_le_aclr TBR_REG(TBR_out,{ TBA_MUX_out[31:7],ttAux_out,{4{1'b0}} },TBRE_afterGate,1,Clk);
     
     //buiding WIM
     wire [31:0] WIM_out;
@@ -654,7 +654,7 @@ module  DataPathV4();
     Clk = 1;
     #500
     
-    PCE <=1;
+    PCE <=0;
     
      #500
     $display("branch T1");
@@ -663,7 +663,7 @@ module  DataPathV4();
     #500
     Clk = 1;
     #500
-    
+    PCE = 1;
     nPC_SEL <= 2; DISP_SEL <= 0;
     
      #500
@@ -755,14 +755,15 @@ module  DataPathV4();
     #500
     Clk = 1;
     #500
-    
+    ttAUX = 1;
     tQE <=1;
     
-    $display("\t>>> debug ::: TBR: %b\n", TBR_out);
+    //$display("\t>>> debug ::: TBR: %b\n", TBR_out);
      #500
     $display("Trap Generated!");
-    $display("\t>>> debug ::: trapQ: %b\n", trapQ_out[5:0]);
+    
      #500
+     $display("\t>>> debug ::: trapQ: %b\n", trapQ_out[5:0]);
     $display("trapQ 1");
     #500
     Clk = 0;
@@ -779,9 +780,10 @@ module  DataPathV4();
         RFE <= 0;
         CIN_SEL <= 0;
         RC_SEL <= 2;
-        ttAUX <= 1;
+        //ttAUX =0;
         
         $display("trapQ 2");
+       // $display("\t>>> debug ::: trapQ: %b\n", ttAux_out[2:0]);
     #500
     Clk = 0;
     #500
@@ -792,7 +794,9 @@ module  DataPathV4();
         RFE <= 1;
         
         
+        
        #500 
+       
             $display("trapQ 3");
     #500
     Clk = 0;
@@ -806,15 +810,17 @@ module  DataPathV4();
         
         nPC_SEL <= 1;
       #500  
-      $display("\t>>> debug ::: trapQ: %b\n", ttAux_out[2:0]);
+      
             $display("trapQ 4");
     #500
     Clk = 0;
     #500
     Clk = 1;
     #500   
-     nPCE <= 0;
-     RFE <= 1;
+     nPCE = 0;
+     RFE = 1;
+     TBRE = 0;
+     #10
      
      
      #500
@@ -824,21 +830,12 @@ module  DataPathV4();
     #500
     Clk = 1;
     #500   
+    TBRE =0;
+    nPCE = 1;
+    #10
+    ttAUX =0;
     
-    nPCE <= 1;
-    PCE <= 0;
-    
-    #500
-     $display("trapQ 6");
-    #500
-    Clk = 0;
-    #500
-    Clk = 1;
-    #500   
-    
-    nPC_ADDSEL <= 0;
-    nPC_SEL <= 0;
-    PCE <= 1;
+   //PCE = 0;
     
     #500
      $display("trapQ 6");
@@ -847,26 +844,69 @@ module  DataPathV4();
     #500
     Clk = 1;
     #500   
+    //$display("\t>>> debug ::: ttAux: %b\n", ttAux_out[2:0]);
+    nPC_ADDSEL = 0;
+    nPC_SEL = 1;
+    //PCE = 1;
     
-    nPC_ADD <= 1;
-    nPCE <= 0;
+    #500
+     $display("trapQ 7");
+    #500
+    Clk = 0;
+    #500
+    Clk = 1;
+    #500   
+    TBRE = 1;
+    nPCE = 0;
     
+    //$display("\t>>> debug ::: TBR: %b\n", TBR_out);
    #500 
-      $display("trapQ 6");
+      $display("trapQ 8");
     #500
     Clk = 0;
     #500
     Clk = 1;
     #500   
     
-    nPC_ADD <= 0;
-    nPCE <= 1;
+    nPCE = 1;
+    PCE = 0;
+    
+    #500 
+      $display("trapQ 9");
+    #500
+    Clk = 0;
+    #500
+    Clk = 1;
+    #500 
+    nPC_SEL = 0;
+    PCE = 1;
+    
+      $display("trapQ 9");
+    #500
+    Clk = 0;
+    #500
+    Clk = 1;
+    #500 
+    nPC_ADD = 1;
+    nPCE = 0;
+    PCE = 1;
+    
+    
+     $display("trapQ 10");
+    #500
+    Clk = 0;
+    #500
+    Clk = 1;
+    #500 
+    nPC_ADD = 0;
+    nPCE = 1;
+    
     
     $display("trap true is done");
-    //$display("\t>>> debug ::: PC: %h - nPC: %h\n", PC_out, nPC_out);
+    $display("\t>>> debug ::: PC: %h - nPC: %h\n", PC_out, nPC_out);
    
-    //$display("\t>>> debug ::: TBR: %b\n", TBR_out);
-    //$display("\t>>> debug ::: PSR[7:0]: %b\n", PSR_out[7:0]);
+    $display("\t>>> debug ::: TBR: %h\n", TBR_out);
+    $display("\t>>> debug ::: PSR[7:0]: %b\n", PSR_out[7:0]);
      end 
 
 endmodule

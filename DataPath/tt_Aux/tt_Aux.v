@@ -8,7 +8,7 @@
 module  tt_Aux(output reg[2:0] out, input wire[5:0] tQout, input ttAux);
  
  //11 a 4
-always@ (posedge ttAux)
+always@ (ttAux)
 begin
     if(tQout & 6'b000001)
     begin
