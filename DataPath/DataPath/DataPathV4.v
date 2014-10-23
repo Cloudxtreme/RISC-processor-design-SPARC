@@ -11,7 +11,7 @@ module  DataPathV4();
     reg [31:0] buffer[0:255];
     reg [31:0] IR, PSR, MAR, MDR, PC, nPC, TBR, WIM, MDR_AUX, MAR_AUX, tQ_out;
     reg [0:0] MFC;
-    reg [0:0] IRE, MDRE, TBRE, nPCE, PCE, MARE, nPC_ADD,tQE,tQClr, 
+    reg [0:0] IRE, MDRE, TBRE, nPCE, PCE, MARE, nPC_ADD,tQE,tQClr, IRClr, 
     nPC_ADDSEL, TB_ADD, MFA, MOP_SEL, PSRE, BAUX, 
     RFE, RA_SEL, DISP_SEL, AOP_SEL, WIME, ttAUX, ET, ALUE,
     PSR_SUPER, PSR_PREV_SUP, ClrPC, Clk, nPCClr, PSR_SEL, TBA_SEL;
@@ -33,7 +33,7 @@ module  DataPathV4();
     //buiding IR 
     
     wire [31:0] IR_out;
-    register_32bit_le_aclr IR_REG(IR_out,MDR_out,IRE,1,Clk);
+    register_32bit_le_aclr IR_REG(IR_out,MDR_out,IRE,IRClr,Clk);
     
     //buiding PSR  {{24{ram[address][7]}}, ram[address]};
     //reg [31:0] PSR_in = ; 
@@ -204,7 +204,7 @@ module  DataPathV4();
 //        #500
 //        MFA = 0;
 
-  i = 0;
+       i = 0;
         $readmemh("file2.dat",buffer);
         $display("  Preloading memory from file");
         OP1 = 6'h04;
@@ -234,25 +234,31 @@ module  DataPathV4();
        
         //==================
         // crap test from here on
-        $display("\ndataPath test");
-    $display("Initializing data path");
+    $display("\ndataPath test");
+    $display("Reset 1");
+    #500
     IRE <= 1;
     MDRE <= 1; 
     TBRE <= 1;
     nPCE <= 1;
     PCE <= 1;
-    ClrPC <= 1;
-    MARE <= 0;
-    nPC_ADD <= 1;
+    MARE <= 1;
+    tQE <= 1;
+    nPC_ADD <= 0;
     nPC_ADDSEL <= 1;
-    TB_ADD <= 1; 
+    TB_ADD <= 0; 
     MFA <= 0; 
     MOP_SEL <= 1; 
     MAR_SEL <= 1;
+    ClrPC <= 1;
+    nPCClr <= 1;
+    IRClr <= 1;
     nPC_SEL <= 1;
     PSRE <= 1;
-    BAUX <= 1;
+    BAUX <= 0;
     RFE <= 1;
+    ALUE <= 0;
+    tQClr <= 1;
     RA_SEL <= 1;
     MDR_SEL <= 1;
     ALU_SEL <= 1;
@@ -261,205 +267,139 @@ module  DataPathV4();
     DISP_SEL <= 1;
     AOP_SEL <= 1;
     WIME <= 1;
-    ttAUX <= 1; 
-    Clk <= 0;
+    ttAUX <= 1;
     
-    #700
+    #500
+    $display("Reset 2");
+    #500
+    Clk = 0;
+    #500
+    Clk = 1;
+    #500
     
-    $display("Toggling: ClrPC");
+    //clears en 0
     ClrPC <= 0;
+    nPCClr <= 0;
+    tQClr <= 0;
+    IRClr <= 0;
     
-    #100
-    ClrPC = 1;
-    $display("PC = %h",PC);
+    #500
+    $display("Reset 3");
+    #500
+    Clk = 0;
+    #500
+    Clk = 1;
+    #500
     
-    $display("\nLoading PC to MAR");
+    // putting TBRE = 0
+    //Clr <= 1   
+    TBRE <= 0;
+    nPC_ADDSEL <= 0;
+    nPC_SEL <= 0;
+    PSRE <= 0;
+    RFE <= 0;
+    RC_SEL <= 0;
+    WIME <= 0;
+    ClrPC <= 1;
+    nPCClr <= 1;
+    tQClr <= 1;
+    IRClr <= 1;
+    
+    #500
+    $display("Reset 4");
+    #500
+    Clk = 0;
+    #500
+    Clk = 1;
+    #500
+    
+    TBRE <= 1;
+    nPCE  <= 0;
+    nPC_ADD <= 1;
+    PSRE <= 1;
+    RFE <= 1;
+    WIME <= 1;
+       
+    #500
+    $display("Reset 5");
+    #500
+    Clk = 0;
+    #500
+    Clk = 1;
+    #500
+    
+    nPCE <= 1; 
+    nPC_ADD <= 0;
+    
+    #500
+    $display("RESET DONE");
+    $display("PC: %h - nPC: %h\n", PC_out, nPC_out); 
+    
+    #500
+    $display("FETCH 1");
+    #500
+    Clk = 0;
+    #500
+    Clk = 1;
+    #500
+    
+    MARE <= 0;
     MAR_SEL <= 1;
+    
     #500
-    MARE = 0;
+    $display("FETCH 2");
+    #500
+    Clk = 0;
     #500
     Clk = 1;
-    #100
-    Clk = 0;
-    MAR_SEL = 1;
-    #100
-    $display("MAR = %h",MAR_out);
-    
-    $display("\nLoading instruction from memory");
-    MOP_SEL  =1;
     #500
-    MDR_SEL = 0;
-    #500
-    OP1 = 6'h08;
-    #1000 
-    
-    MFA = 1;
-    #500
-    $display("MFC = %d Memory Done!",MFC);
-
-    $display("\nRAM_out to MDR and IR");
-    MFA = 0;
+  
+    MARE <= 1;
+    MOP_SEL <= 1;
     MDR_SEL <= 0;
+    OP1 <= 6'h08;
+    
+    #500
+    $display(">>> debug >>>. MAR: %h",MAR_out );
+    $display(">>> debug >>>. MOP_MUX_OUT: %h", MOP_MUX_out);
+    $display("FETCH 3");
+    #500
+    Clk = 0;
+    #500
+    Clk = 1;
+    #500
+    
     MDRE <= 0;
-    IRE = 0;
-    Clk = 1;
-    #100
-    Clk = 0;
-    IRE = 1;
-    MDRE = 1;
-    $display("MDR = 0x%h",MDR); 
-   
-    $display("IR = 0x%h",IR);
-    
-    
-    $display("\nSetting CWP = 0");
-    
-    CWP = 0;
-    PSRE = 0;
-    Clk = 1;
-    #100
-    Clk = 0;
-    PSRE = 1;
-    #100
-    $display("CWP= %b",CWP[1:0]);
-    
-    $display("\nStoring MDR in r17");
-    RC_SEL = 2'b10;
-    #500
-    
-    CIN_SEL = 3;
-    #500
-    
-    #100
-    RFE = 0;
-    #500
-    Clk = 1;
-    #500
-    Clk = 0;
-    RFE = 1;
-    
-    #100
-    $display("Storing MDR in r18");
-    RC_SEL = 2'b01;
-    #500
-  
-    CIN_SEL = 3;
-    #500
-    
-    #100
-    RFE = 0;
-    #500
-    Clk = 1;
-    #500
-    Clk = 0;
-    RFE = 1;
-    #100
-  RA_SEL = 0;
-    #500
-    
-    $display("RA = r%d",RF_Aout);
-    #100
-    $display("RB = r%d",RF_Bout);
-  
-  #100
-    $display("\nr17 = r17+r18");
-    
-    RC_SEL = 0;
-    #500
-    CIN_SEL = 2;
-    #500
-    RA_SEL = 0;
-    #500
-    AOP_SEL <= 0;
-    #500
-    ALU_SEL <= 0;
-    #500
-    $display("ALU_out = %h",alu_out);
-    PSRE = 0;
-    Clk = 1;
-    #100
-    Clk = 0;
-    PSRE = 1;
-    #100
-    
-        $display("N=%b Z=%b C=%b V=%b\n", N, Z, C, V);
-    $display("Cin=%h",CIN_MUX_out);
-    $display("R%d",RC_MUX_out[4:0]);
-    
-    
-    //====!!!!use this type of instructions to write into the register file
-    $display("\nStoring result in r17");
-    RC_SEL = 2'b00;
-    #500
-    $display("R%d",RC_MUX_out[4:0]);
-    CIN_SEL = 2;
-    #500
-    $display("Cin=%h",CIN_MUX_out);
-    #100
-    RFE = 0;
-    #500
-    Clk = 1;
-    #500
-    Clk = 0;
-    #100
-    RFE = 1;
-    #100
-  RA_SEL = 0;
+    MFA <= 1;
+        
     #1000
-    $display("RA = r%h",RF_Aout);
-    $display("RB = r%h",RF_Bout);
-    
-    //======!!!!!!!!!!!=========================
-    
-    $display("\nStoring result on memory");
-    MDR_SEL = 1;
+    $display(">>> debug >>>. MFC: %b",MFC);
+    $display(">>> debug >>>. RAM: %h",ram_dataOut );
+    $display("FETCH 4");
     #500
-    MDRE= 0;
-    #100
-    Clk = 1;
-    #200
     Clk = 0;
-    MDRE = 1;
-    #100
-    
-    $display("MDR = 0x%h",MDR_out);
-    MOP_SEL  =1;
-    OP1 = 6'h04;
-    #1000 
-    
-    MFA = 1;
     #500
-    $display("MFC = %d Memory Done!",MFC);
-    
-    $display("\nGetting result from memory");
-    MOP_SEL  =1;
-    OP1 = 6'h08;
-    #1000 
-    
-    MFA = 1;
-    #500
-    $display("MFC = %d Memory Done!",MFC);
-    $display("RAM_out to MDR");
-    MFA = 0;
-    MDR_SEL <= 0;
-    MDRE <= 0;
-    IRE = 0;
     Clk = 1;
-    #100
+    #500
+    
+    IRE <= 0;
+    MDRE <= 1;
+    MFA <= 0;
+    
+    #500
+    $display("FETCH 5");
+    #500
     Clk = 0;
-    IRE = 1;
-    MDRE = 1;
-    $display("MDR = 0x%h",MDR);
+    #500
+    Clk = 1;
+    #500
     
+    IRE <= 1;
     
+    #500
+    $display("FETCH DONE");
+    $display("IR: %h\n", IR_out);
     
-    
-        
-        
-        
-        // crap test up to here
-        
-        
      end 
 
 endmodule
