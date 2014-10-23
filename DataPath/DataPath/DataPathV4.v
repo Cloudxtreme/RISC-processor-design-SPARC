@@ -13,7 +13,7 @@ module  DataPathV4();
     reg [0:0] MFC;
     reg [0:0] IRE, MDRE, TBRE, nPCE, PCE, MARE, nPC_ADD,tQE,tQClr, 
     nPC_ADDSEL, TB_ADD, MFA, MOP_SEL, PSRE, BAUX, 
-    RFE, RA_SEL, DISP_SEL, AOP_SEL, WIME, ttAUX, ET, 
+    RFE, RA_SEL, DISP_SEL, AOP_SEL, WIME, ttAUX, ET, ALUE,
     PSR_SUPER, PSR_PREV_SUP, ClrPC, Clk, nPCClr, PSR_SEL, TBA_SEL;
     reg [1:0] nPC_SEL, ALU_SEL, CIN_SEL, RC_SEL, MAR_SEL, MDR_SEL;
     reg [4:0] CWP;
@@ -26,7 +26,7 @@ module  DataPathV4();
     wire [0:0] N, Z, V, C, Carry;
     wire [31:0] alu_out;
     //output reg [31:0] result, output reg N, Z, V, C, input [31:0] A_in, B_in, input [5:0] opcode, input carry);
-    ALU_32bit alu(alu_out,N, Z, V, C, RF_Aout, ALU_MUX_out, AOP_MUX_out[5:0], Carry);
+    ALU_32bit alu(alu_out,N, Z, V, C, RF_Aout, ALU_MUX_out, AOP_MUX_out[5:0], Carry, ALUE);
     
     //--------CREATING REGISTERS----------//
     
@@ -38,7 +38,9 @@ module  DataPathV4();
     //buiding PSR  {{24{ram[address][7]}}, ram[address]};
     //reg [31:0] PSR_in = ; 
     wire [31:0] PSR_out;
-    register_32bit_le_aclr PSR_REG(PSR_out,{{8{1'b0}},N, Z, V, C,{12{1'b0}},PSR_MUX_out[7:0]},PSRE,1,Clk);
+    wire [0:0] PSRE_afterGate;
+    nor(PSRE_afterGate,ALUE,!PSRE);
+    register_32bit_le_aclr PSR_REG(PSR_out,{{8{1'b0}},N, Z, V, C,{12{1'b0}},PSR_MUX_out[7:0]},PSRE_afterGate,1,Clk);
     
     //buiding MAR
     
@@ -60,7 +62,11 @@ module  DataPathV4();
     //buiding TBR
     //reg [31:0] TBR_in = {{TBA_IN},{ttAux_out},{4{1'b0}} };
     wire [31:0] TBR_out;
-    register_32bit_le_aclr TBR_REG(TBR_out,{ TBA_MUX_out[31:7],{ttAux_out},{4{1'b0}} },TBRE,1,Clk);
+    
+    
+    wire [0:0] TBRE_afterGate;
+    nor(TBRE_afterGate,!TBRE,ttAUX);
+    register_32bit_le_aclr TBR_REG(TBR_out,{ TBA_MUX_out[31:7],{ttAux_out},{4{1'b0}} },TBRE_afterGate,1,Clk);
     
     //buiding WIM
     wire [31:0] WIM_out;
