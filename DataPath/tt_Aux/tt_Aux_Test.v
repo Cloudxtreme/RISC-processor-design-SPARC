@@ -7,22 +7,35 @@
 ***************************************/
 module  tt_Aux_Test();
 
-    reg [31:0] in;
+    reg [5:0] in;
     reg [0:0] sig;
-    wire[7:0] out;
+    wire[2:0] out;
     
     tt_Aux ttAux(out, in, sig);
-                      //simulation time
+                      
     initial begin
      $display("|========= Testing tt_Aux ==========|");
+       
+       in = 1;
+       #10
+       sig = 1;
+       #10
+       sig = 0;
+       $display("in=%b    out=%d",in, out);
+       #10
+       in = 2;
+       #10 sig = 1;
+       #10 sig = 0;
+        $display("in=%b    out=%d",in, out);
         
-        in = 5;
-        #100
-        sig = 1;
-        #100
         
-        $display("\t Displaying in %d", in);
-        $display("\t Displaying out %d", out);
+        #10
+       in = 34;
+       #10 sig = 1;
+       #10 sig = 0;
+        $display("in=%b    out=%d",in, out);
+        
+       
         
       end
 
