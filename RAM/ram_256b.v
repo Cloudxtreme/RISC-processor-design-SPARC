@@ -66,7 +66,7 @@ module  ram_256b(output reg [31:0] DataOut, output reg MFC, input MFA, input [5:
                 end //end if MFA
          else 
             begin
-                DataOut = 32'bz;   // else high impedance out 
+                //DataOut = 32'bz;   // else high impedance out 
                 MFC = 0;           // clear MFC flag on MFA clear
             end
     end // end always

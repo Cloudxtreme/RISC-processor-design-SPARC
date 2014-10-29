@@ -215,7 +215,7 @@ module  DataPathV4();
         MAR_SEL = 2;
        
         CWP = 1;
-        
+        MAR_AUX = 0;
            MDR_AUX = 15;    
         #100
         MDRE = 0;
@@ -415,7 +415,7 @@ module  DataPathV4();
     
     MARE = 0;
     #1000
-    MAR_AUX = 4;
+    MAR_AUX = 0;
     #1000
     MAR_SEL = 2;
     
@@ -907,6 +907,10 @@ module  DataPathV4();
    
     $display("\t>>> debug ::: TBR: %h\n", TBR_out);
     $display("\t>>> debug ::: PSR[7:0]: %b\n", PSR_out[7:0]);
+    
+
+    
+    
      end 
 
 endmodule
