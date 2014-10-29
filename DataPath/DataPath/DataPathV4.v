@@ -103,7 +103,7 @@ module  DataPathV4();
     //ram_256b(output reg [31:0] DataOut, output reg MFC, input MFA, input [5:0] opcode, input [7:0] address, input [31:0] DataIn);
     wire [31:0] ram_dataOut;
     wire [0:0] MFC_special;
-    ram_256b ram1(ram_dataOut, MFC_special, MFA, MOP_MUX_out[5:0], MAR_out[7:0], MDR_out);
+    ram_256b ram1(ram_dataOut, MFC_special, MFA, MOP_MUX_out[5:0], MAR_out[8:0], MDR_out);
     
     //------------ Register file ---------//
     wire [31:0] RF_Aout, RF_Bout;

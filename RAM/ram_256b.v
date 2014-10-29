@@ -5,8 +5,8 @@
 *
 * Description: RAM module for SPARC implemetation.
 ***************************************/
-module  ram_256b(output reg [31:0] DataOut, output reg MFC, input MFA, input [5:0] opcode, input [7:0] address, input [31:0] DataIn);
-    reg [7:0] ram[0:255]; //256 localizaciones de 8 bits
+module  ram_256b(output reg [31:0] DataOut, output reg MFC, input MFA, input [5:0] opcode, input [8:0] address, input [31:0] DataIn);
+    reg [7:0] ram[0:511]; //256 localizaciones de 8 bits
     always @ (MFA)
     begin
         if(MFA)
