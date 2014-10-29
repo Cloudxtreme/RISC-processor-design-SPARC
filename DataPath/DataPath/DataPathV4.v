@@ -280,26 +280,56 @@ module  DataPathV4();
         Clk = 1;
         #100
         Clk = 0;
-        
-        MDRE = 1;
-        Clk = 0;
-        MFA = 0;
-        MDR_AUX = buffer[i[31:0]];
-        MAR_AUX = i;
-        #500
-        MDRE = 0;
+       Clk = 0;
         #500
         Clk = 1;
         #500
+        MAR_SEL <= 2;
+        MAR_AUX <= i;
+        MDR_SEL <= 2;
+        MDR_AUX <= buffer[i[31:0]];
+        MOP_SEL <= 1;
+        OP1 <= 6'b000100;
+        
+        #500
         Clk = 0;
         #500
+        Clk = 1;
+        #500
+        MDRE = 0;
+        MARE = 0;
+        
+        #500
+        Clk = 0;
+        #500
+        Clk = 1;
+        #500
         MDRE = 1;
+        MARE = 1;
+        
+        #500
+        Clk = 0;
+        #500
+        Clk = 1;
+        #500
+        
+        $display("\nMDR_OUT: %h", MDR_out);
+        $display("MAR_OUT: %h", MAR_out);
+        $display("MOP: %b",MOP_MUX_out[5:0]);
+        
+        #500
+        Clk = 0;
+        #500
+        Clk = 1;
         #500
         MFA = 1;
-        #1000
-        $display("MFA: %b Memory Done!", MFA);
-        MFA = 0;
+        
         #500
+        Clk = 0;
+        #500
+        Clk = 1;
+        #500
+        MFA = 0;
         //$display("MDR_OUT: %h", MDR_out);
        
         //==================
@@ -447,9 +477,9 @@ module  DataPathV4();
     Clk = 1;
     #500
     
-    //MDRE = 0;
+    MDRE = 0;
     MFA = 1;
-    MDRE = 1;
+    //MDRE = 1;
         
     #1000
     //$display("\t>>> debug ::: MFC: %b",MFC);
