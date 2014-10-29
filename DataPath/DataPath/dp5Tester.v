@@ -60,11 +60,12 @@ DataPathV5 path(IR, PSR, MAR, MDR, PC, nPC, TBR, WIM, TQ, ALU,
 //        #500
 //        MFA = 0;
 
-       i = 0;
-       
-       
-        $readmemh("file2.dat",buffer);
+      i = 0;
+        $readmemb("file3.dat",buffer);
         $display("  Preloading memory from file");
+        for(i=0;i<128;i=i+1)begin
+            path.ram1.ram[i] = buffer[i[7:0]];
+        end
         OP1 = 6'h04;
         MOP_SEL  = 1;
         MDR_SEL = 2;
@@ -129,57 +130,57 @@ DataPathV5 path(IR, PSR, MAR, MDR, PC, nPC, TBR, WIM, TQ, ALU,
         
         
         
-       
-       Clk = 0;
-        #500
-        Clk = 1;
-        #500
-        MAR_SEL <= 2;
-        MAR_AUX <= i;
-        MDR_SEL <= 2;
-        MDR_AUX <= buffer[i[31:0]];
-        MOP_SEL <= 1;
-        OP1 <= 6'b000100;
-        
-        #500
-        Clk = 0;
-        #500
-        Clk = 1;
-        #500
-        MDRE = 0;
-        MARE = 0;
-        
-        #500
-        Clk = 0;
-        #500
-        Clk = 1;
-        #500
-        MDRE = 1;
-        MARE = 1;
-        
-        #500
-        Clk = 0;
-        #500
-        Clk = 1;
-        #500
-        
-        $display("\nMDR_OUT: %h", MDR);
-        $display("MAR_OUT: %h", MAR);
-        //$display("MOP: %b",MOP_MUX_out[5:0]);
-        
-        #500
-        Clk = 0;
-        #500
-        Clk = 1;
-        #500
-        MFA = 1;
-        
-        #500
-        Clk = 0;
-        #500
-        Clk = 1;
-        #500
-        MFA = 0;
+//       
+//       Clk = 0;
+//        #500
+//        Clk = 1;
+//        #500
+//        MAR_SEL <= 2;
+//        MAR_AUX <= i;
+//        MDR_SEL <= 2;
+//        MDR_AUX <= buffer[i[31:0]];
+//        MOP_SEL <= 1;
+//        OP1 <= 6'b000100;
+//        
+//        #500
+//        Clk = 0;
+//        #500
+//        Clk = 1;
+//        #500
+//        MDRE = 0;
+//        MARE = 0;
+//        
+//        #500
+//        Clk = 0;
+//        #500
+//        Clk = 1;
+//        #500
+//        MDRE = 1;
+//        MARE = 1;
+//        
+//        #500
+//        Clk = 0;
+//        #500
+//        Clk = 1;
+//        #500
+//        
+//        $display("\nMDR_OUT: %h", MDR);
+//        $display("MAR_OUT: %h", MAR);
+//        //$display("MOP: %b",MOP_MUX_out[5:0]);
+//        
+//        #500
+//        Clk = 0;
+//        #500
+//        Clk = 1;
+//        #500
+//        MFA = 1;
+//        
+//        #500
+//        Clk = 0;
+//        #500
+//        Clk = 1;
+//        #500
+//        MFA = 0;
         //$display("MDR_OUT: %h", MDR_out);
        
         //==================
