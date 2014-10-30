@@ -15,3 +15,4 @@
 ../DataPath/tt_Aux/tt_Aux.v
 ../DataPath/DataPath/DataPathV5.v
 ./CU.v
+./CU_tester.v

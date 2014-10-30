@@ -14,6 +14,7 @@ PSR_SUPER, PSR_PREV_SUP, ClrPC, nPCClr, PSR_SEL, TBA_SEL, output reg [31:0] MDR_
     
     always @(posedge Clk)
      begin
+    // $display("state: %d;\tPC: %h;\tnPC: %h", state, PC, nPC);
         case (state)
             //reset 1
             0: begin
@@ -67,34 +68,34 @@ PSR_SUPER, PSR_PREV_SUP, ClrPC, nPCClr, PSR_SEL, TBA_SEL, output reg [31:0] MDR_
           2:  //reset3
             begin
                 TBRE <= 0;
-                nPC_ADDSEL <= 0;
-                nPC_SEL <= 0;
-                PSRE <= 0;
-                RFE <= 0;
-                RC_SEL <= 0;
-                WIME <= 0;
-                ClrPC <= 1;
-                nPCClr <= 1;
-                tQClr <= 1;
-                IRClr <= 1;
+                nPC_ADDSEL = 0;
+                nPC_SEL = 0;
+                PSRE = 0;
+                RFE = 0;
+                RC_SEL = 0;
+                WIME = 0;
+                ClrPC = 1;
+                nPCClr = 1;
+                tQClr = 1;
+                IRClr = 1;
                 
                 state = 3;
             end
            3:  //reset4
             begin 
-                TBRE <= 1;
-                nPCE  <= 0;
-                nPC_ADD <= 1;
-                PSRE <= 1;
-                RFE <= 1;
-                WIME <= 1;
+                TBRE = 1;
+                nPCE  = 0;
+                nPC_ADD = 1;
+                PSRE = 1;
+                RFE = 1;
+                WIME = 1;
                 
                 state = 4;
             end
           4: //reset5
             begin
-                nPCE <= 1; 
-                nPC_ADD <= 0;
+                nPCE = 1; 
+                nPC_ADD = 0;
                 
                 state = 5;
             end           
@@ -529,7 +530,6 @@ PSR_SUPER, PSR_PREV_SUP, ClrPC, nPCClr, PSR_SEL, TBA_SEL, output reg [31:0] MDR_
         begin
             RFE = 1;
             ALUE = 0;
-            
             state = 86;
         end
      65: //TRAP 1
@@ -704,7 +704,13 @@ PSR_SUPER, PSR_PREV_SUP, ClrPC, nPCClr, PSR_SEL, TBA_SEL, output reg [31:0] MDR_
             
             state = 90;
         end
-       90: // Trap Queue1
+       90: //ELLLLL FAMOSOOOOOOOO
+        begin
+          //if(tQ_IN == 0)
+           state = 5;
+          //else state = 91;
+        end 
+       91: // Trap Queue1
         begin
             PSR_SEL = 1;
             PSRE = 0;
@@ -716,71 +722,71 @@ PSR_SUPER, PSR_PREV_SUP, ClrPC, nPCClr, PSR_SEL, TBA_SEL, output reg [31:0] MDR_
             CIN_SEL = 0;
             RC_SEL = 2;
             
-            state = 91;
+            state = 92;
         end
-       91: // Trap Queue2
+       92: // Trap Queue2
         begin
             PSRE = 1;
             PSR_SEL = 0;
             RFE = 1;
             
-            state = 92;
+            state = 93;
         end
-       92: // Trap Queue3
+       93: // Trap Queue3
         begin
             RFE = 0;
             CIN_SEL = 1;
             RC_SEL = 1;
             nPC_SEL = 1;
             
-            state = 93;
+            state = 94;
         end
-       93: //Trap queue4
+       94: //Trap queue4
          begin
              nPCE = 0;
              RFE = 1;
              TBRE = 0;
              
-             state = 94;
+             state = 95;
          end      
-       94: //Trap queue5
+       95: //Trap queue5
         begin
             TBRE =0;
             nPCE = 1;
             ttAUX =0;
             
-            state = 95;
+            state = 96;
         end      
-       95: //Trap Queue6
+       96: //Trap Queue6
         begin
             nPC_ADDSEL = 0;
             nPC_SEL = 1;
             
-            state = 96;
+            state = 97;
         end 
-       96: //Trap Queue7 
+       97: //Trap Queue7 
         begin
             TBRE = 1;
             nPCE = 0;
             
-            state = 97;
+            state = 98;
         end 
-      97: //Trap Queue8
+      98: //Trap Queue8
        begin
             nPCE = 1;
             PCE = 0;
             
-            state = 98;
+            state = 99;
        end 
-      98: //Trap Queue9  
+      99: //Trap Queue9  
         begin
             nPC_ADD = 1;
             nPCE = 0;
             PCE = 1;
             
-            state = 99;
+            state = 100;
         end
-      99: //Trap Queue10
+      100: //Trap Queue10
        begin
             nPC_ADD = 0;
             nPCE = 1;
