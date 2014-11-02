@@ -72,6 +72,8 @@ PSR_SUPER, PSR_PREV_SUP, ClrPC, nPCClr, PSR_SEL, TBA_SEL, MDR_AUX, MAR_AUX, WIM_
         for(i=0;i<128;i=i+1)begin
             path.ram1.ram[i] = buffer[i[7:0]];
         end
+        path.registerFile.regWin1.block2.reg1.Y = 5;
+        path.registerFile.regWin1.block2.reg2.Y = 0;
           
         #500
         Reset = 0;

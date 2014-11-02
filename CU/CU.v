@@ -8,7 +8,7 @@
 module  CU(output reg [0:0] IRE, TBRE, MDRE, nPCE, PCE, MARE, nPC_ADD, tQE, tQClr, IRClr, nPC_ADDSEL, TB_ADD, MFA, MOP_SEL, PSRE, BAUX, RFE, RA_SEL, DISP_SEL, AOP_SEL, WIME, ttAUX, ET, ALUE, 
 PSR_SUPER, PSR_PREV_SUP, ClrPC, nPCClr, PSR_SEL, TBA_SEL, output reg [31:0] MDR_AUX, MAR_AUX, WIM_IN, output reg [1:0] nPC_SEL, ALU_SEL, CIN_SEL, RC_SEL, MAR_SEL, MDR_SEL, output reg [4:0] CWP,
  output reg [5:0] OP1, output reg [24:0] TBA_IN, output reg [5:0] tQ_IN, input [31:0] IR, PSR, MAR, MDR, PC, nPC, TBR, WIM, TQ, ALU, input [0:0] MFC, Clk, Reset);
-
+    integer cond = 0;
     integer state = 0; 
     reg[4:0] CWP_local; 
     
@@ -190,7 +190,12 @@ PSR_SUPER, PSR_PREV_SUP, ClrPC, nPCClr, PSR_SEL, TBA_SEL, output reg [31:0] MDR_
            16: //branch2
             begin
                 PCE = 1;
-                
+                cond = 0;
+            checkFlags;  
+            if(cond)
+                state = 17;
+            else
+                state = 20;
                 checkFlags;
             end 
            17: //branch t1
@@ -534,12 +539,17 @@ PSR_SUPER, PSR_PREV_SUP, ClrPC, nPCClr, PSR_SEL, TBA_SEL, output reg [31:0] MDR_
         end
      65: //TRAP 1
         begin
-            checkFlags;    
+            cond = 0;
+            checkFlags;  
+            if(cond)
+                state = 66;
+            else
+                state = 86;  
         end
      66: //TRAP 2
         begin
+            tQ_IN = tQ_IN | 6'b001000;
             tQE = 0;
-            
             state = 67;
         end
       67: //TRAP 3
@@ -804,7 +814,73 @@ PSR_SUPER, PSR_PREV_SUP, ClrPC, nPCClr, PSR_SEL, TBA_SEL, output reg [31:0] MDR_
     //checks flags and sets state
      task checkFlags;
         begin
-            
+            case (IR[28:25])
+                8:
+                    begin
+                        cond = 1;
+                    end
+                0:
+                    begin
+                        cond = 0;
+                    end
+                9:
+                    begin
+                        cond = !Z;
+                    end
+                1:
+                    begin
+                        cond = Z;
+                    end
+                10:
+                    begin
+                        cond = !(Z | (N ^ V));
+                    end
+                2:
+                    begin//Z or (N xor V)!
+                        cond = (Z | (N ^ V));
+                    end
+                11:
+                    begin//not (N xor V)
+                        cond = !(N ^ V);
+                    end
+                3:
+                    begin
+                        cond = (N ^ V);
+                    end
+                12:
+                    begin
+                        cond = !(C | Z);
+                    end
+                4:
+                    begin
+                        cond = (C | Z);
+                    end
+                13:
+                    begin
+                        cond = !C;
+                    end
+               5:
+                    begin
+                        cond = C;
+                    end
+                14:
+                    begin
+                        cond = !N;
+                    end
+               6:
+                    begin
+                        cond = N;
+                    end
+                15:
+                    begin
+                        cond = !V;
+                    end
+                7:
+                    begin
+                        cond = V;
+                    end
+            endcase
+                    
         end
      endtask
      
