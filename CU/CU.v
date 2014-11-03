@@ -9,6 +9,7 @@ module  CU(output reg [0:0] IRE, TBRE, MDRE, nPCE, PCE, MARE, nPC_ADD, tQE, tQCl
 PSR_SUPER, PSR_PREV_SUP, ClrPC, nPCClr, PSR_SEL, TBA_SEL, output reg [31:0] MDR_AUX, MAR_AUX, WIM_IN, output reg [1:0] nPC_SEL, ALU_SEL, CIN_SEL, RC_SEL, MAR_SEL, MDR_SEL, output reg [4:0] CWP,
  output reg [5:0] OP1, output reg [24:0] TBA_IN, output reg [5:0] tQ_IN, input [31:0] IR, PSR, MAR, MDR, PC, nPC, TBR, WIM, TQ, ALU, input [0:0] MFC, Clk, Reset);
     integer cond = 0;
+    integer overC,underC;
     integer state = 0; 
     reg[4:0] CWP_local; 
     
@@ -355,11 +356,16 @@ PSR_SUPER, PSR_PREV_SUP, ClrPC, nPCClr, PSR_SEL, TBA_SEL, output reg [31:0] MDR_
          end
         40: //ret1
          begin
+            underC = 0;
             checkUnderFlow;
+            if(underC)
+                state = 41;
+            else
+                state = 43;
          end
         41: //ret trap1
          begin
-            tQ_IN = 4;
+            tQ_IN[2] = 1;
             tQE = 0;
             
             state = 42;
@@ -438,13 +444,24 @@ PSR_SUPER, PSR_PREV_SUP, ClrPC, nPCClr, PSR_SEL, TBA_SEL, output reg [31:0] MDR_
        end
       51: //SR1
        begin
+           underC = 0;
+           overC = 0;
            checkUnderFlow;
            checkOverFlow;
+           if(underC || overC)
+            state = 52;
+           else
+            state = 54;
        end
       52: //SR TRAP1
        begin
-           tQE = 0; //////WARNING!!!!!!!!
+            
+           if(underC)
+                tQ_IN[2] = 1;
+           else if(overC)
+                tQ_IN[1] = 1;
            
+           tQE = 0;
            state = 53;
        end
      53: //SR TRAP2
@@ -548,7 +565,7 @@ PSR_SUPER, PSR_PREV_SUP, ClrPC, nPCClr, PSR_SEL, TBA_SEL, output reg [31:0] MDR_
         end
      66: //TRAP 2
         begin
-            tQ_IN = tQ_IN | 6'b001000;
+            tQ_IN[3] = 1;
             tQE = 0;
             state = 67;
         end
@@ -556,7 +573,6 @@ PSR_SUPER, PSR_PREV_SUP, ClrPC, nPCClr, PSR_SEL, TBA_SEL, output reg [31:0] MDR_
        begin
             tQE = 1;
              
-            //FUNKY ///////WAAAAAAAAARRRRRRRNNNNNNNIIIIIIIINNNNNNNNNNGGGGGGGGGG!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             state = 86; 
        end
       68: //LS1
@@ -716,9 +732,9 @@ PSR_SUPER, PSR_PREV_SUP, ClrPC, nPCClr, PSR_SEL, TBA_SEL, output reg [31:0] MDR_
         end
        90: //ELLLLL FAMOSOOOOOOOO
         begin
-          //if(tQ_IN == 0)
+          if(TQ[5:0] == 0)
            state = 5;
-          //else state = 91;
+          else state = 91;
         end 
        91: // Trap Queue1
         begin
@@ -888,17 +904,15 @@ PSR_SUPER, PSR_PREV_SUP, ClrPC, nPCClr, PSR_SEL, TBA_SEL, output reg [31:0] MDR_
      task checkUnderFlow;
         begin
         //check if no trap state 41 
+        underC = WIM[(CWP+1)%32];
         
-        //////SET t_QIN FLAG IF NECESARY
         end
      endtask
      
      //checkOverFlow
      task checkOverFlow;
         begin
-        //check if no trap state 41
-        
-        //////SET t_QIN FLAG IF NECESARY
+        overC = WIM[(CWP-1)%32];
         end
      endtask
 endmodule
