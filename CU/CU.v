@@ -782,6 +782,7 @@ PSR_SUPER, PSR_PREV_SUP, ClrPC, nPCClr, output reg [31:0] MDR_AUX, MAR_AUX, WIM_
              nPCE = 0;
              RFE = 1;
              TBRE = 0;
+             ttAUX = 1;
              
              state = 95;
          end      

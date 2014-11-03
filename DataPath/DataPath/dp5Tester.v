@@ -697,6 +697,9 @@ DataPathV5 path(IR, PSR, MAR, MDR, PC, nPC, TBR, WIM, TQ, ALU,
      nPCE = 0;
      RFE = 1;
      TBRE = 0;
+     ttAUX = 1;
+     TBA_SEL=0;
+     
      #10
      
      
@@ -734,6 +737,8 @@ DataPathV5 path(IR, PSR, MAR, MDR, PC, nPC, TBR, WIM, TQ, ALU,
     #500   
     TBRE = 1;
     nPCE = 0;
+    tQ_IN = 0;
+    tQE = 0;
     
     //$display("\t>>> debug ::: TBR: %b\n", TBR_out);
    #500 
@@ -743,7 +748,7 @@ DataPathV5 path(IR, PSR, MAR, MDR, PC, nPC, TBR, WIM, TQ, ALU,
     #500
     Clk = 1;
     #500   
-    
+    tQE = 1;
     nPCE = 1;
     PCE = 0;
     
@@ -779,6 +784,7 @@ DataPathV5 path(IR, PSR, MAR, MDR, PC, nPC, TBR, WIM, TQ, ALU,
     
     
     $display("trap true is done");
+    $display("\t>>> debug ::: trapQ: %b\n", TQ[5:0]);
     $display("\t>>> debug ::: PC: %h - nPC: %h\n", PC, nPC);
    
     $display("\t>>> debug ::: TBR: %h\n", TBR);
