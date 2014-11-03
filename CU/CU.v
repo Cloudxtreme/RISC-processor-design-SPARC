@@ -6,7 +6,7 @@
 * Description: brais brains brains
 ***************************************/
 module  CU(output reg [0:0] IRE, TBRE, MDRE, nPCE, PCE, MARE, nPC_ADD, tQE, tQClr, IRClr, nPC_ADDSEL, TB_ADD, MFA, MOP_SEL, PSRE, BAUX, RFE, RA_SEL, DISP_SEL, AOP_SEL, WIME, ttAUX, ET, ALUE, 
-PSR_SUPER, PSR_PREV_SUP, ClrPC, nPCClr, PSR_SEL, TBA_SEL, output reg [31:0] MDR_AUX, MAR_AUX, WIM_IN, output reg [1:0] nPC_SEL, ALU_SEL, CIN_SEL, RC_SEL, MAR_SEL, MDR_SEL, output reg [4:0] CWP,
+PSR_SUPER, PSR_PREV_SUP, ClrPC, nPCClr, output reg [31:0] MDR_AUX, MAR_AUX, WIM_IN, output reg [1:0] nPC_SEL, ALU_SEL, CIN_SEL, RC_SEL, MAR_SEL, MDR_SEL, PSR_SEL, TBA_SEL, output reg [4:0] CWP,
  output reg [5:0] OP1, output reg [24:0] TBA_IN, output reg [5:0] tQ_IN, input [31:0] IR, PSR, MAR, MDR, PC, nPC, TBR, WIM, TQ, ALU, input [0:0] MFC, Clk, Reset);
     integer cond = 0;
     integer overC,underC;
@@ -63,7 +63,10 @@ PSR_SUPER, PSR_PREV_SUP, ClrPC, nPCClr, PSR_SEL, TBA_SEL, output reg [31:0] MDR_
                 nPCClr = 0;
                 tQClr = 0;
                 IRClr = 0;
-                
+                TBA_SEL = 1;
+                PSR_SEL = 1;
+                TBA_IN = 0;
+        
                 state  = 2;
            end
           2:  //reset3
@@ -90,7 +93,8 @@ PSR_SUPER, PSR_PREV_SUP, ClrPC, nPCClr, PSR_SEL, TBA_SEL, output reg [31:0] MDR_
                 PSRE = 1;
                 RFE = 1;
                 WIME = 1;
-                
+                TBA_SEL = 0;
+                PSR_SEL = 0;
                 state = 4;
             end
           4: //reset5
@@ -297,6 +301,12 @@ PSR_SUPER, PSR_PREV_SUP, ClrPC, nPCClr, PSR_SEL, TBA_SEL, output reg [31:0] MDR_
              state = 51;
             else if(IR[24:19] == 6'b111010)
              state = 65;
+            else if(IR[24:19] == 6'b110001)
+             state = 101;//WRTPSR
+            else if(IR[24:19] == 6'b110010)
+             state = 0;//WRTWIM
+            else if(IR[24:19] == 6'b110011)
+             state = 0;//WRTTBR
             else state = 60;
         end 
       29: //jmpl !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -818,7 +828,64 @@ PSR_SUPER, PSR_PREV_SUP, ClrPC, nPCClr, PSR_SEL, TBA_SEL, output reg [31:0] MDR_
             nPCE = 1;
             
             state = 5;
-       end  
+       end
+      
+     101: //WRTPSR/TBR/WIM1 
+      begin
+            
+            CIN_SEL = 2;
+            RC_SEL = 0;
+            AOP_SEL = 1;
+            OP1 = 6'b000011;
+            
+            if(IR[13] == 1)
+                state = 103;
+            else state = 102;  
+      end 
+     102: //SR R 
+      begin
+        ALU_SEL = 0;
+        
+        state = 104;
+      end
+     103: //SR D 
+      begin
+        ALU_SEL = 1;
+        
+        state = 104;
+      end
+     104: //SR 4
+        begin
+             if(IR[24:19] == 6'b110001)
+              begin
+                PSRE = 0;//WRTPSR
+                PSR_SEL = 1;
+              end
+            else if(IR[24:19] == 6'b110010)
+              begin
+                WIME = 0;//WRTWIM
+              end
+            else if(IR[24:19] == 6'b110011)
+              begin
+                TBRE = 0;//WRTTBR
+                TBA_SEL = 1;
+              end
+            ALUE = 1;
+        
+            state = 105;
+        end
+     105: //SR 5
+        begin
+            PSRE = 1;
+            PSR_SEL = 0;
+            TBRE = 1;
+            TBA_SEL = 0;
+            WIME = 1;
+            ALUE = 0;
+        
+            state = 86;
+        end
+        
      endcase
     end
 
@@ -841,59 +908,59 @@ PSR_SUPER, PSR_PREV_SUP, ClrPC, nPCClr, PSR_SEL, TBA_SEL, output reg [31:0] MDR_
                     end
                 9:
                     begin
-                        cond = !Z;
+                        cond = !PSR[22];
                     end
                 1:
                     begin
-                        cond = Z;
+                        cond = PSR[22];
                     end
                 10:
                     begin
-                        cond = !(Z | (N ^ V));
+                        cond = !(PSR[22] | (PSR[23] ^ PSR[21]));
                     end
                 2:
                     begin//Z or (N xor V)!
-                        cond = (Z | (N ^ V));
+                        cond = (PSR[22] | (PSR[23] ^ PSR[21]));
                     end
                 11:
                     begin//not (N xor V)
-                        cond = !(N ^ V);
+                        cond = !(PSR[23] ^ PSR[21]);
                     end
                 3:
                     begin
-                        cond = (N ^ V);
+                        cond = (PSR[23] ^ PSR[21]);
                     end
                 12:
                     begin
-                        cond = !(C | Z);
+                        cond = !(PSR[20] | PSR[22]);
                     end
                 4:
                     begin
-                        cond = (C | Z);
+                        cond = (PSR[20] | PSR[22]);
                     end
                 13:
                     begin
-                        cond = !C;
+                        cond = !PSR[20];
                     end
                5:
                     begin
-                        cond = C;
+                        cond = PSR[20];
                     end
                 14:
                     begin
-                        cond = !N;
+                        cond = !PSR[23];
                     end
                6:
                     begin
-                        cond = N;
+                        cond = PSR[23];
                     end
                 15:
                     begin
-                        cond = !V;
+                        cond = !PSR[21];
                     end
                 7:
                     begin
-                        cond = V;
+                        cond = PSR[21];
                     end
             endcase
                     

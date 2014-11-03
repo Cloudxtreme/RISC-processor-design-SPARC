@@ -16,9 +16,9 @@ module  CU_tester(
     wire [0:0] IRE, MDRE, TBRE, nPCE, PCE, MARE, nPC_ADD,tQE,tQClr, IRClr, 
     nPC_ADDSEL, TB_ADD, MFA, MOP_SEL, PSRE, BAUX, 
     RFE, RA_SEL, DISP_SEL, AOP_SEL, WIME, ttAUX, ET, ALUE,
-    PSR_SUPER, PSR_PREV_SUP, ClrPC, nPCClr, PSR_SEL, TBA_SEL;
+    PSR_SUPER, PSR_PREV_SUP, ClrPC, nPCClr;
     wire [31:0] MDR_AUX, MAR_AUX;
-    wire [1:0] nPC_SEL, ALU_SEL, CIN_SEL, RC_SEL, MAR_SEL, MDR_SEL;
+    wire [1:0] nPC_SEL, ALU_SEL, CIN_SEL, RC_SEL, MAR_SEL, MDR_SEL, PSR_SEL, TBA_SEL;
     wire [4:0] CWP;
     wire [5:0] OP1;
     wire [24:0] TBA_IN;
@@ -31,13 +31,13 @@ DataPathV5 path(IR, PSR, MAR, MDR, PC, nPC, TBR, WIM, TQ, ALU,
                      MFC, IRE, MDRE, TBRE, nPCE, PCE, MARE, nPC_ADD,tQE,tQClr, IRClr, 
                     nPC_ADDSEL, TB_ADD, MFA, MOP_SEL, PSRE, BAUX, 
                     RFE, RA_SEL, DISP_SEL, AOP_SEL, WIME, ttAUX, ET, ALUE,
-                    PSR_SUPER, PSR_PREV_SUP, ClrPC, Clk, nPCClr, PSR_SEL, TBA_SEL,MDR_AUX,MAR_AUX,
-                    nPC_SEL, ALU_SEL, CIN_SEL, RC_SEL, MAR_SEL, MDR_SEL,
+                    PSR_SUPER, PSR_PREV_SUP, ClrPC, Clk, nPCClr,MDR_AUX,MAR_AUX,
+                    nPC_SEL, ALU_SEL, CIN_SEL, RC_SEL, MAR_SEL, MDR_SEL, PSR_SEL, TBA_SEL,
                     CWP,OP1, TBA_IN,
                      tQ_IN, WIM_IN);
 
 CU cu(IRE, TBRE, MDRE, nPCE, PCE, MARE, nPC_ADD, tQE, tQClr, IRClr, nPC_ADDSEL, TB_ADD, MFA, MOP_SEL, PSRE, BAUX, RFE, RA_SEL, DISP_SEL, AOP_SEL, WIME, ttAUX, ET, ALUE, 
-PSR_SUPER, PSR_PREV_SUP, ClrPC, nPCClr, PSR_SEL, TBA_SEL, MDR_AUX, MAR_AUX, WIM_IN, nPC_SEL, ALU_SEL, CIN_SEL, RC_SEL, MAR_SEL, MDR_SEL, CWP,
+PSR_SUPER, PSR_PREV_SUP, ClrPC, nPCClr, MDR_AUX, MAR_AUX, WIM_IN, nPC_SEL, ALU_SEL, CIN_SEL, RC_SEL, MAR_SEL, MDR_SEL, PSR_SEL, TBA_SEL, CWP,
  OP1, TBA_IN, tQ_IN, IR, PSR, MAR, MDR, PC, nPC, TBR, WIM, TQ, ALU, MFC, Clk, Reset);
 
 

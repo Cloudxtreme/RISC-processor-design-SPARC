@@ -9,9 +9,9 @@ module  DataPathV5(output reg [31:0] IR, PSR, MAR, MDR, PC, nPC, TBR, WIM, TQ, A
                     output reg [0:0] MFC, input [0:0] IRE, MDRE, TBRE, nPCE, PCE, MARE, nPC_ADD,tQE,tQClr, IRClr, 
                     nPC_ADDSEL, TB_ADD, MFA, MOP_SEL, PSRE, BAUX, 
                     RFE, RA_SEL, DISP_SEL, AOP_SEL, WIME, ttAUX, ET, ALUE,
-                    PSR_SUPER, PSR_PREV_SUP, ClrPC, Clk, nPCClr, PSR_SEL, TBA_SEL,
+                    PSR_SUPER, PSR_PREV_SUP, ClrPC, Clk, nPCClr,
                     input [31:0] MDR_AUX, MAR_AUX,
-                    input [1:0] nPC_SEL, ALU_SEL, CIN_SEL, RC_SEL, MAR_SEL, MDR_SEL,
+                    input [1:0] nPC_SEL, ALU_SEL, CIN_SEL, RC_SEL, MAR_SEL, MDR_SEL, PSR_SEL, TBA_SEL,
                     input [4:0] CWP, input [5:0] OP1, input [24:0] TBA_IN,
                     input [5:0] tQ_IN, input [31:0] WIM_IN);
 
@@ -164,12 +164,12 @@ module  DataPathV5(output reg [31:0] IR, PSR, MAR, MDR, PC, nPC, TBR, WIM, TQ, A
     //mux_2x1_32bit(output reg[31:0] Y,input wire[0:0] s, input wire[31:0] I1, I0);
     //buidling TBA_MUX
     wire [31:0] TBA_MUX_out;
-    mux_2x1_32bit TBA_MUX(TBA_MUX_out ,TBA_SEL, {TBA_IN,{7{1'b0}}}, {TBR_out[31:7],{7{1'b0}}});
+    mux_4x1_32bit TBA_MUX(TBA_MUX_out ,TBA_SEL, {32{1'b0}},{alu_out[31:7],{7{1'b0}}},{TBA_IN,{7{1'b0}}}, {TBR_out[31:7],{7{1'b0}}});
     
     //mux_2x1_32bit(output reg[31:0] Y,input wire[0:0] s, input wire[31:0] I1, I0);
     //buidling PSR_MUX
     wire [31:0] PSR_MUX_out;
-    mux_2x1_32bit PSR_MUX(PSR_MUX_out ,PSR_SEL, {{24{1'b0}},PSR_SUPER, PSR_PREV_SUP,ET,CWP}, {{24{1'b0}},PSR_out[7:0]});
+    mux_4x1_32bit PSR_MUX(PSR_MUX_out ,PSR_SEL, {32{1'b0}},{alu_out[31:24],N,Z,V,C,alu_out[19:0]},{{24{1'b0}},PSR_SUPER, PSR_PREV_SUP,ET,CWP}, {{24{1'b0}},PSR_out[7:0]});
     
     
     //-------//

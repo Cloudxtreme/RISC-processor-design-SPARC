@@ -16,9 +16,9 @@ module  dp5Tester();
     reg [0:0] IRE, MDRE, TBRE, nPCE, PCE, MARE, nPC_ADD,tQE,tQClr, IRClr, 
     nPC_ADDSEL, TB_ADD, MFA, MOP_SEL, PSRE, BAUX, 
     RFE, RA_SEL, DISP_SEL, AOP_SEL, WIME, ttAUX, ET, ALUE,
-    PSR_SUPER, PSR_PREV_SUP, ClrPC, Clk, nPCClr, PSR_SEL, TBA_SEL;
+    PSR_SUPER, PSR_PREV_SUP, ClrPC, Clk, nPCClr;
     reg [31:0] MDR_AUX, MAR_AUX;
-    reg [1:0] nPC_SEL, ALU_SEL, CIN_SEL, RC_SEL, MAR_SEL, MDR_SEL;
+    reg [1:0] nPC_SEL, ALU_SEL, CIN_SEL, RC_SEL, MAR_SEL, MDR_SEL, PSR_SEL, TBA_SEL;
     reg [4:0] CWP;
     reg [5:0] OP1;
     reg [24:0] TBA_IN;
@@ -29,8 +29,8 @@ DataPathV5 path(IR, PSR, MAR, MDR, PC, nPC, TBR, WIM, TQ, ALU,
                      MFC, IRE, MDRE, TBRE, nPCE, PCE, MARE, nPC_ADD,tQE,tQClr, IRClr, 
                     nPC_ADDSEL, TB_ADD, MFA, MOP_SEL, PSRE, BAUX, 
                     RFE, RA_SEL, DISP_SEL, AOP_SEL, WIME, ttAUX, ET, ALUE,
-                    PSR_SUPER, PSR_PREV_SUP, ClrPC, Clk, nPCClr, PSR_SEL, TBA_SEL,MDR_AUX,MAR_AUX,
-                    nPC_SEL, ALU_SEL, CIN_SEL, RC_SEL, MAR_SEL, MDR_SEL,
+                    PSR_SUPER, PSR_PREV_SUP, ClrPC, Clk, nPCClr,MDR_AUX,MAR_AUX,
+                    nPC_SEL, ALU_SEL, CIN_SEL, RC_SEL, MAR_SEL, MDR_SEL, PSR_SEL, TBA_SEL,
                     CWP,OP1, TBA_IN,
                      tQ_IN, WIM_IN);
 
@@ -295,9 +295,7 @@ DataPathV5 path(IR, PSR, MAR, MDR, PC, nPC, TBR, WIM, TQ, ALU,
     #500
     
     MARE = 0;
-    #1000
     MAR_AUX = 0;
-    #1000
     MAR_SEL = 2;
     
     #500
@@ -310,9 +308,7 @@ DataPathV5 path(IR, PSR, MAR, MDR, PC, nPC, TBR, WIM, TQ, ALU,
   
     MARE = 1;
     MOP_SEL = 1;
-    #1000
     MDR_SEL = 0;
-    #1000
     OP1 = 6'h08;
     
     #500
@@ -332,10 +328,10 @@ DataPathV5 path(IR, PSR, MAR, MDR, PC, nPC, TBR, WIM, TQ, ALU,
     MFA = 1;
     //MDRE = 1;
         
-    #1000
+    
     //$display("\t>>> debug ::: MFC: %b",MFC);
     //$display("\t>>> debug ::: MDR_OUT: %h",MDR_out );
-    #1000
+    
     $display("FETCH 4");
     #500
     Clk = 0;
@@ -713,7 +709,6 @@ DataPathV5 path(IR, PSR, MAR, MDR, PC, nPC, TBR, WIM, TQ, ALU,
     #500   
     TBRE =0;
     nPCE = 1;
-    #10
     ttAUX =0;
     
    //PCE = 0;
