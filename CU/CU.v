@@ -169,14 +169,15 @@ PSR_SUPER, PSR_PREV_SUP, ClrPC, nPCClr, output reg [31:0] MDR_AUX, MAR_AUX, WIM_
                RC_SEL = 0;
                AOP_SEL = 1;
                OP1 = 6'b101010; //set high value
-               
+               DISP_SEL = 0;//
+               BAUX = 1;//testing changes
                state = 13;
             end 
            13: //Set high2
              begin
                 RFE = 0;
                 ALUE = 1;
-                
+                BAUX = 0;//testing changes
                 state = 14;
              end
            14://Set high3
@@ -213,14 +214,14 @@ PSR_SUPER, PSR_PREV_SUP, ClrPC, nPCClr, output reg [31:0] MDR_AUX, MAR_AUX, WIM_
           18: //branch t2
            begin 
                 nPCE = 0;
-                BAUX = 1;
+                //BAUX = 1;  !!!!!!!!testing changes
                 
                 state = 19;
            end
           19: //branch t3
            begin
                 nPCE = 1;
-                BAUX = 0;
+                //BAUX = 0;  !!!!!!!!!!!!testing changes
                 
                 if(nPC > 508)
                  state = 84;
@@ -542,7 +543,7 @@ PSR_SUPER, PSR_PREV_SUP, ClrPC, nPCClr, output reg [31:0] MDR_AUX, MAR_AUX, WIM_
      61: //ALOP R
         begin
             ALU_SEL = 0;
-            
+            //$display("Performing Arithmetic operation rd=%d, rs1=%d, rs2=%d",IR[29:25],IR[18:14],IR[4:0]);
             state = 63;
         end
      62: //ALOP D
@@ -562,6 +563,7 @@ PSR_SUPER, PSR_PREV_SUP, ClrPC, nPCClr, output reg [31:0] MDR_AUX, MAR_AUX, WIM_
         begin
             RFE = 1;
             ALUE = 0;
+            //$display("result = %d",ALU);
             state = 86;
         end
      65: //TRAP 1
@@ -657,7 +659,8 @@ PSR_SUPER, PSR_PREV_SUP, ClrPC, nPCClr, output reg [31:0] MDR_AUX, MAR_AUX, WIM_
             RFE = 0;
             CIN_SEL = 3;
             RC_SEL = 0;
-            
+           // $display("loading value %d",MDR);
+           // $display("from: %h",MAR);
             state = 78;
         end
       78: //LOAD5

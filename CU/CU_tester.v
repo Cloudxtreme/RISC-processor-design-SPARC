@@ -10,7 +10,7 @@ module  CU_tester(
 
 
  integer i;
-    reg [31:0] buffer[0:63];
+    reg [31:0] buffer[0:511];
     wire [31:0] IR, PSR, MAR, MDR, PC, nPC, TBR, WIM, TQ,ALU;
     wire [0:0] MFC;
     wire [0:0] IRE, MDRE, TBRE, nPCE, PCE, MARE, nPC_ADD,tQE,tQClr, IRClr, 
@@ -83,15 +83,17 @@ PSR_SUPER, PSR_PREV_SUP, ClrPC, nPCClr, MDR_AUX, MAR_AUX, WIM_IN, nPC_SEL, ALU_S
         //==================
         // crap test from here on
       $display("Test Start");
+      $display("ALU:\t\tPC:\t\tIR:\t\t\n");
       repeat(100) 
        begin
         #500
         Clk = 0;
         #500
         Clk = 1;
+        $display("%h\t%h\t%h\t", ALU, PC, IR);
        end  
-      $display("ALU:\t\tPC:\t\tIR:\t\t\n"); 
-      $monitor("%h\t%h\t%h\t", ALU, PC, IR); 
+      //$display("ALU:\t\tPC:\t\tIR:\t\t\n"); 
+      //$monitor("%h\t%h\t%h\t", ALU, PC, IR); 
  end
 
 endmodule
