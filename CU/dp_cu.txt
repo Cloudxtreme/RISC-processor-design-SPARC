@@ -14,5 +14,5 @@
 ../DataPath/nPC_ADD/nPC_ADD.v
 ../DataPath/tt_Aux/tt_Aux.v
 ../DataPath/DataPath/DataPathV5.v
-./CU.v
+./CU2.v
 ./CU_tester.v

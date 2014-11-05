@@ -8,7 +8,7 @@
 *               different opcodes for load and 
 *               store instructions.
 ***************************************/
-module  ram_tester;
+module  ramTester;
   
     integer i;
     reg [7:0] buffer[0:255]; 
@@ -22,9 +22,9 @@ module  ram_tester;
     ram_256b ram1(data_out, MFC, MFA, opcode, addr, data_in);
     initial begin
         //preparing data buffer
-        i = 0;
-        $readmemh("file.dat",buffer);
-        ram1.ram[i] = buffer[i[7:0]];
+        //i = 0;
+        //$readmemh("file.dat",buffer);
+        //ram1.ram[i] = buffer[i[7:0]];
         //$display("data from file = %b",buffer[i]);
         
         //testing store byte

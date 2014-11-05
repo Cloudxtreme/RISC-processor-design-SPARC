@@ -68,6 +68,7 @@ module  RegisterFile(output reg [31:0] Aout, Bout, input [31:0] Rin, input [1:0]
     
     always @ (*)
         begin
+            
             Aout = Aout_final;
             Bout = Bout_final;
         end 

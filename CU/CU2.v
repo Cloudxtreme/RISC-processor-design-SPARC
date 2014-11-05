@@ -65,7 +65,7 @@ PSR_SUPER, PSR_PREV_SUP, ClrPC, nPCClr, output reg [31:0] MDR_AUX, MAR_AUX, WIM_
                 IRClr = 0;
                 TBA_SEL = 1;
                 PSR_SEL = 1;
-                TBA_IN = 0;
+                TBA_IN = 3;
         
                 state  = 2;
            end
@@ -190,15 +190,18 @@ PSR_SUPER, PSR_PREV_SUP, ClrPC, nPCClr, output reg [31:0] MDR_AUX, MAR_AUX, WIM_
              end
            15: //branch1
             begin
-                PCE = 0;
+                PCE = 1;
                 $display("branch");
-                
+                //nPC_SEL = 2;
+                DISP_SEL = 0;
                 state = 16;
             end
            16: //branch2
             begin
                 PCE = 1;
+                BAUX = 1;
                 cond = 0;
+                $display("n=%b",PSR[23]);
             checkFlags;  
             if(cond)
                 state = 17;
@@ -208,6 +211,7 @@ PSR_SUPER, PSR_PREV_SUP, ClrPC, nPCClr, output reg [31:0] MDR_AUX, MAR_AUX, WIM_
             end 
            17: //branch t1
             begin
+                BAUX = 0;
                 nPC_SEL = 2;
                 DISP_SEL = 0;
                 
@@ -225,12 +229,14 @@ PSR_SUPER, PSR_PREV_SUP, ClrPC, nPCClr, output reg [31:0] MDR_AUX, MAR_AUX, WIM_
                 nPCE = 1;
                 //BAUX = 0;  !!!!!!!!!!!!testing changes
                 
-                if(nPC > 508)
-                 state = 84;
-                else state = 90;
+                //if(nPC > 508)
+                 //state = 84;
+                //else state = 90;
+                state = 86;
            end
           20: //branch F
            begin
+                BAUX = 0;
                 if(IR[29] == 1)
                  state = 21;
                 else state = 86;
@@ -264,7 +270,9 @@ PSR_SUPER, PSR_PREV_SUP, ClrPC, nPCClr, output reg [31:0] MDR_AUX, MAR_AUX, WIM_
             RFE = 0;
             CIN_SEL = 1; 
             RC_SEL = 3;
-            $display("call");            
+            $display("call"); 
+            DISP_SEL = 1; 
+            BAUX = 1;          
             state = 25;            
           end
          25: //call2
@@ -272,7 +280,8 @@ PSR_SUPER, PSR_PREV_SUP, ClrPC, nPCClr, output reg [31:0] MDR_AUX, MAR_AUX, WIM_
             PCE = 0;
             nPC_SEL = 2;
             RFE = 1;            
-            DISP_SEL = 1;        
+            BAUX = 0;
+                    
                                    
             state = 26;            
           end
@@ -280,14 +289,14 @@ PSR_SUPER, PSR_PREV_SUP, ClrPC, nPCClr, output reg [31:0] MDR_AUX, MAR_AUX, WIM_
           begin
             nPCE = 0;
             PCE = 1;
-            BAUX = 1;
+            //BAUX = 1;
             
             state = 27;
           end
        27: //call4
         begin
             nPCE = 1;
-            BAUX = 0;
+            //BAUX = 0;
             
             //check valid address
             if(nPC > 508)
@@ -317,7 +326,7 @@ PSR_SUPER, PSR_PREV_SUP, ClrPC, nPCClr, output reg [31:0] MDR_AUX, MAR_AUX, WIM_
             RFE = 0;
             CIN_SEL = 1;
             RC_SEL = 0;
-            $display("");
+            $display("jmpl");
             state = 30;
         end
       30: //jmpl 2
@@ -371,6 +380,7 @@ PSR_SUPER, PSR_PREV_SUP, ClrPC, nPCClr, output reg [31:0] MDR_AUX, MAR_AUX, WIM_
          begin
             underC = 0;
             checkUnderFlow;
+            $display("rett");
             if(underC)
                 state = 41;
             else
@@ -461,6 +471,7 @@ PSR_SUPER, PSR_PREV_SUP, ClrPC, nPCClr, output reg [31:0] MDR_AUX, MAR_AUX, WIM_
            overC = 0;
            checkUnderFlow;
            checkOverFlow;
+           $display("save/restore");
            if(underC || overC)
             state = 52;
            else
@@ -537,7 +548,7 @@ PSR_SUPER, PSR_PREV_SUP, ClrPC, nPCClr, output reg [31:0] MDR_AUX, MAR_AUX, WIM_
             CIN_SEL = 2;
             RC_SEL = 0;
             AOP_SEL = 0;
-            
+            $display("alop");
             if(IR[13] == 1)
                 state = 62;
             else state = 61;
@@ -545,13 +556,13 @@ PSR_SUPER, PSR_PREV_SUP, ClrPC, nPCClr, output reg [31:0] MDR_AUX, MAR_AUX, WIM_
      61: //ALOP R
         begin
             ALU_SEL = 0;
-            //$display("Performing Arithmetic operation rd=%d, rs1=%d, rs2=%d",IR[29:25],IR[18:14],IR[4:0]);
+            $display("Performing Arithmetic operation rd=%d, rs1=%d, rs2=%d",IR[29:25],IR[18:14],IR[4:0]);
             state = 63;
         end
      62: //ALOP D
         begin
             ALU_SEL = 1;
-            
+            $display("Performing Arithmetic operation rd=%d, rs1=%d, rs2=%d",IR[29:25],IR[18:14],IR[4:0]);
             state = 63;
         end
      63: //ALOP2
@@ -571,7 +582,8 @@ PSR_SUPER, PSR_PREV_SUP, ClrPC, nPCClr, output reg [31:0] MDR_AUX, MAR_AUX, WIM_
      65: //TRAP 1
         begin
             cond = 0;
-            checkFlags;  
+            checkFlags; 
+            $display("cond trap"); 
             if(cond)
                 state = 66;
             else
@@ -595,7 +607,7 @@ PSR_SUPER, PSR_PREV_SUP, ClrPC, nPCClr, output reg [31:0] MDR_AUX, MAR_AUX, WIM_
             RA_SEL = 0;
             AOP_SEL = 1;
             OP1 = 6'b000000;
-            
+            $display("load/store");
             if(IR[13] == 1)
                 state = 70;
             else state = 69;  
@@ -639,7 +651,9 @@ PSR_SUPER, PSR_PREV_SUP, ClrPC, nPCClr, output reg [31:0] MDR_AUX, MAR_AUX, WIM_
        begin
          MOP_SEL = 0;
          MDR_SEL = 0;
-         
+         $display("load");
+         CIN_SEL = 3;
+            RC_SEL = 0;
          state = 75;
        end
      75: //LOAD2
@@ -659,14 +673,16 @@ PSR_SUPER, PSR_PREV_SUP, ClrPC, nPCClr, output reg [31:0] MDR_AUX, MAR_AUX, WIM_
         begin
             MDRE = 1;
             RFE = 0;
-            CIN_SEL = 3;
-            RC_SEL = 0;
+            #100
+            //CIN_SEL = 3;
+            //RC_SEL = 0;
            // $display("loading value %d",MDR);
            // $display("from: %h",MAR);
             state = 78;
         end
       78: //LOAD5
         begin
+            #100
             RFE = 1;
             
             state = 86;
@@ -676,7 +692,7 @@ PSR_SUPER, PSR_PREV_SUP, ClrPC, nPCClr, output reg [31:0] MDR_AUX, MAR_AUX, WIM_
             MDRE = 0;
             RA_SEL= 1;
             MDR_SEL =1;
-            
+            $display("store");
             state = 80;
         end  
        80: //STORE2
@@ -708,7 +724,7 @@ PSR_SUPER, PSR_PREV_SUP, ClrPC, nPCClr, output reg [31:0] MDR_AUX, MAR_AUX, WIM_
         begin
          tQ_IN[5] = 1; //VERIFYYYYYYY
          tQE = 0;
-         
+         $display("invalid instruction");
          state = 85;
         end
        85: //invalid instruction 2
@@ -720,7 +736,11 @@ PSR_SUPER, PSR_PREV_SUP, ClrPC, nPCClr, output reg [31:0] MDR_AUX, MAR_AUX, WIM_
        86: //nPC update 1
         begin
          PCE = 0;
-         
+         MOP_SEL = 1;
+         OP1 = 6'h08;
+         MAR_SEL = 1;
+         MDR_SEL = 0;
+         $display("nPCupdate");
          state = 87; 
         end 
        87: //nPC update 2
@@ -728,14 +748,14 @@ PSR_SUPER, PSR_PREV_SUP, ClrPC, nPCClr, output reg [31:0] MDR_AUX, MAR_AUX, WIM_
           PCE = 1;
           nPC_ADDSEL = 0;
            nPC_SEL = 0;
-           
+           MARE = 0;
            state = 88;
         end 
        88: //nPC update 3 
         begin
          nPC_ADD = 1;
          nPCE = 0;
-         
+         MARE = 1;
          state = 89;
         end
        89: //nPC update 4
@@ -747,6 +767,7 @@ PSR_SUPER, PSR_PREV_SUP, ClrPC, nPCClr, output reg [31:0] MDR_AUX, MAR_AUX, WIM_
         end
        90: //ELLLLL FAMOSOOOOOOOO
         begin
+        $display("trapQ");
           if(TQ[5:0] == 0)
            state = 5;
           else state = 91;
@@ -825,14 +846,15 @@ PSR_SUPER, PSR_PREV_SUP, ClrPC, nPCClr, output reg [31:0] MDR_AUX, MAR_AUX, WIM_
             nPC_ADD = 1;
             nPCE = 0;
             PCE = 1;
-            
+            tQ_IN  = 0;
+            tQE = 0;
             state = 100;
         end
       100: //Trap Queue10
        begin
             nPC_ADD = 0;
             nPCE = 1;
-            
+            tQE = 1;
             state = 5;
        end
       
@@ -866,15 +888,18 @@ PSR_SUPER, PSR_PREV_SUP, ClrPC, nPCClr, output reg [31:0] MDR_AUX, MAR_AUX, WIM_
               begin
                 PSRE = 0;//WRTPSR
                 PSR_SEL = 1;
+                $display("WRTPSR");
               end
             else if(IR[24:19] == 6'b110010)
               begin
                 WIME = 0;//WRTWIM
+                $display("WRTWIM");
               end
             else if(IR[24:19] == 6'b110011)
               begin
                 TBRE = 0;//WRTTBR
                 TBA_SEL = 1;
+                $display("WRTTBR");
               end
             ALUE = 1;
         
