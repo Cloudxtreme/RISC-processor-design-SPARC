@@ -190,14 +190,15 @@ PSR_SUPER, PSR_PREV_SUP, ClrPC, nPCClr, output reg [31:0] MDR_AUX, MAR_AUX, WIM_
              end
            15: //branch1
             begin
-                PCE = 0;
+                //PCE = 0;
                 $display("branch");
-                
+                DISP_SEL = 0;
+                BAUX = 1;
                 state = 16;
             end
            16: //branch2
             begin
-                PCE = 1;
+                BAUX = 0;
                 cond = 0;
             checkFlags;  
             if(cond)
@@ -208,22 +209,20 @@ PSR_SUPER, PSR_PREV_SUP, ClrPC, nPCClr, output reg [31:0] MDR_AUX, MAR_AUX, WIM_
             end 
            17: //branch t1
             begin
+                PCE = 0;
                 nPC_SEL = 2;
-                DISP_SEL = 0;
-                
                 state = 18;
             end
           18: //branch t2
            begin 
+                PCE = 1;
                 nPCE = 0;
-                //BAUX = 1;  !!!!!!!!testing changes
                 
                 state = 19;
            end
           19: //branch t3
            begin
                 nPCE = 1;
-                //BAUX = 0;  !!!!!!!!!!!!testing changes
                 
                 if(nPC > 508)
                  state = 84;
@@ -239,11 +238,12 @@ PSR_SUPER, PSR_PREV_SUP, ClrPC, nPCClr, output reg [31:0] MDR_AUX, MAR_AUX, WIM_
            begin
                 nPC_ADDSEL = 1;
                 nPC_SEL = 0;
-                
+                PCE = 0;
                 state =22;
            end 
          22: //branchF2
           begin
+           PCE = 1;
            nPCE = 0;
            nPC_ADD = 1;
            

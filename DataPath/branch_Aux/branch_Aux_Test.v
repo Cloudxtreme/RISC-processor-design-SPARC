@@ -17,12 +17,13 @@ module  branch_Aux_Test();
     initial begin
      $display("|========= Testing branch_Aux ==========|");
         in_pc = 5;
-        in_disp = 30'h10000000;
+        in_disp = -1;
+        sel = 0;
         
         #100
         sel = 1;
         
-        $display("\t in_pc: %d\t in_disp: %d", in_pc, in_disp);
+        $display("\t in_pc: %d\t in_disp: %h", in_pc, in_disp);
         #100
         BAUX = 1;
         #1000
