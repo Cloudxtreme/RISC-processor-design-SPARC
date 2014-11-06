@@ -90,7 +90,7 @@ PSR_SUPER, PSR_PREV_SUP, ClrPC, nPCClr, MDR_AUX, MAR_AUX, WIM_IN, nPC_SEL, ALU_S
         Clk = 0;
         #500
         Clk = 1;
-        $display("%h\t%h\t%h\t%h\t%h", ALU, PC, IR, MAR, MDR);
+        $display("%h\t%h\t%h\t%h\t%h", ALU, PC, IR, nPC, MDR);
        end  
       //$display("ALU:\t\tPC:\t\tIR:\t\t\n"); 
       //$monitor("%h\t%h\t%h\t", ALU, PC, IR); 

@@ -109,7 +109,7 @@ PSR_SUPER, PSR_PREV_SUP, ClrPC, nPCClr, output reg [31:0] MDR_AUX, MAR_AUX, WIM_
                 MARE = 0;
                 MAR_AUX = 0;
                 MAR_SEL = 1;
-                $display("Fetch");
+                //$display("Fetch");
                 state = 6;
             end 
           6: //fetch2
@@ -141,7 +141,10 @@ PSR_SUPER, PSR_PREV_SUP, ClrPC, nPCClr, output reg [31:0] MDR_AUX, MAR_AUX, WIM_
           9: //fetch5
             begin
                 IRE = 1;
-                
+                $display("******************************");
+                #10
+                $display("FETCH:");
+                $display("PC=%d   nPC=%d   IR=%h\n",PC[15:0],nPC[15:0],IR);
                 state = 10;
             end  
           10: //decode op0
@@ -191,9 +194,9 @@ PSR_SUPER, PSR_PREV_SUP, ClrPC, nPCClr, output reg [31:0] MDR_AUX, MAR_AUX, WIM_
            15: //branch1
             begin
                 //PCE = 0;
-                $display("branch");    
+                   
                                              
-                DISP_SEL = 0;                                       //|\\
+                DISP_SEL = 0;                                     
                 BAUX = 1;
                 state = 16;
             end
@@ -224,7 +227,8 @@ PSR_SUPER, PSR_PREV_SUP, ClrPC, nPCClr, output reg [31:0] MDR_AUX, MAR_AUX, WIM_
           19: //branch t3
            begin
                 nPCE = 1;
-                
+                $display("BRANCH_true:");
+                $display("PC=%d  nPC=%d",PC[15:0],nPC[15:0]);
                 if(nPC > 508)
                  state = 84;
                 else state = 90;
@@ -233,7 +237,11 @@ PSR_SUPER, PSR_PREV_SUP, ClrPC, nPCClr, output reg [31:0] MDR_AUX, MAR_AUX, WIM_
            begin
                 if(IR[29] == 1)
                  state = 21;
-                else state = 86;
+                else 
+                begin
+                    state = 86;
+                    $display("BRANCH False a=0. Continue as normal");
+                end
            end
           21: //branchF1
            begin
@@ -254,7 +262,8 @@ PSR_SUPER, PSR_PREV_SUP, ClrPC, nPCClr, output reg [31:0] MDR_AUX, MAR_AUX, WIM_
            begin
            nPCE = 1;
            nPC_ADD = 0;
-            
+           $display("BRANCH False a=1:");
+            $display("PC=%d  nPC=%d",PC[15:0],nPC[15:0]);
            if(nPC > 508)
              state = 84;
             else state = 90;
@@ -543,7 +552,7 @@ PSR_SUPER, PSR_PREV_SUP, ClrPC, nPCClr, output reg [31:0] MDR_AUX, MAR_AUX, WIM_
             CIN_SEL = 2;
             RC_SEL = 0;
             AOP_SEL = 0;
-            $display("alop");
+            $display("ALOP:");
             if(IR[13] == 1)
                 state = 62;
             else state = 61;
@@ -571,7 +580,7 @@ PSR_SUPER, PSR_PREV_SUP, ClrPC, nPCClr, output reg [31:0] MDR_AUX, MAR_AUX, WIM_
         begin
             RFE = 1;
             ALUE = 0;
-            //$display("result = %d",ALU);
+            $display("ALU=%d  Rd=%d",ALU[15:0],IR[29:25]);
             state = 86;
         end
      65: //TRAP 1
@@ -646,7 +655,7 @@ PSR_SUPER, PSR_PREV_SUP, ClrPC, nPCClr, output reg [31:0] MDR_AUX, MAR_AUX, WIM_
        begin
          MOP_SEL = 0;
          MDR_SEL = 0;
-         $display("load");
+         $display("LOAD:");
          CIN_SEL = 3;
             RC_SEL = 0;
          state = 75;
@@ -673,6 +682,8 @@ PSR_SUPER, PSR_PREV_SUP, ClrPC, nPCClr, output reg [31:0] MDR_AUX, MAR_AUX, WIM_
             //RC_SEL = 0;
            // $display("loading value %d",MDR);
            // $display("from: %h",MAR);
+           $display("Address=%d   Data=%d   destination=R%d",MAR[15:0],MDR[15:0],IR[29:25]);
+           //$display("   %d  %d\tR%d",MAR,MDR,IR[29:25]);
             state = 78;
         end
       78: //LOAD5
@@ -687,7 +698,7 @@ PSR_SUPER, PSR_PREV_SUP, ClrPC, nPCClr, output reg [31:0] MDR_AUX, MAR_AUX, WIM_
             MDRE = 0;
             RA_SEL= 1;
             MDR_SEL =1;
-            $display("store");
+            $display("STORE:");
             state = 80;
         end  
        80: //STORE2
@@ -712,7 +723,7 @@ PSR_SUPER, PSR_PREV_SUP, ClrPC, nPCClr, output reg [31:0] MDR_AUX, MAR_AUX, WIM_
        83: //STORE5
         begin
          MFA = 0;
-         
+         $display("Address=%d   Data=%d   source=R%d",MAR[15:0],MDR[15:0],IR[29:25]);
          state = 86;
         end
        84: //invalid instruction 1
@@ -763,6 +774,7 @@ PSR_SUPER, PSR_PREV_SUP, ClrPC, nPCClr, output reg [31:0] MDR_AUX, MAR_AUX, WIM_
        90: //ELLLLL FAMOSOOOOOOOO
         begin
         //$display("trapQ");
+        $display("******************************\n");
           if(TQ[5:0] == 0)
            state = 5;
           else state = 91;
@@ -913,7 +925,7 @@ PSR_SUPER, PSR_PREV_SUP, ClrPC, nPCClr, output reg [31:0] MDR_AUX, MAR_AUX, WIM_
         end
        110: //branch new
        begin
-        $display("branch");   
+        //$display("branch");   
          DISP_SEL = 0;
          BAUX = 1;
          
@@ -951,7 +963,9 @@ PSR_SUPER, PSR_PREV_SUP, ClrPC, nPCClr, output reg [31:0] MDR_AUX, MAR_AUX, WIM_
       115: //branch new true4
         begin
             nPCE = 1;
-            
+            #100
+            $display("BRANCH_true:");
+            $display("PC=%d  nPC=%d",PC[15:0],nPC[15:0]);
             state = 90;
         end  
    

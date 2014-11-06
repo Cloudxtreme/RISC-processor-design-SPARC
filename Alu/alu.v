@@ -9,7 +9,7 @@ module  ALU_32bit(output reg [31:0] result, output reg N, Z, V, C, input [31:0] 
     reg [32:0] temp_res;//reg N, Z, C, V
     reg [32:0] sub_temp;
     
-    always @ (ALUE)
+    always @ (posedge ALUE)
         begin
             case(opcode)
                 6'b000000:  //add w.o. S
