@@ -159,7 +159,7 @@ PSR_SUPER, PSR_PREV_SUP, ClrPC, nPCClr, output reg [31:0] MDR_AUX, MAR_AUX, WIM_
                 if(IR[24:22] == 4)
                     state = 12;
                 else if(IR[24:22] == 2)
-                    state = 15;
+                    state = 110;
                 else state = 84; 
             end
            12: //Set high1
@@ -186,22 +186,20 @@ PSR_SUPER, PSR_PREV_SUP, ClrPC, nPCClr, output reg [31:0] MDR_AUX, MAR_AUX, WIM_
                RFE = 1;
                ALUE = 0;
                
-               state = 15;     
+               state = 86;     
              end
            15: //branch1
             begin
-                PCE = 1;
-                $display("branch");
-                //nPC_SEL = 2;
-                DISP_SEL = 0;
+                //PCE = 0;
+                $display("branch");                                 
+                DISP_SEL = 0;                                       //|\\
+                BAUX = 1;
                 state = 16;
             end
            16: //branch2
             begin
-                PCE = 1;
-                BAUX = 1;
+                BAUX = 0;
                 cond = 0;
-                $display("n=%b",PSR[23]);
             checkFlags;  
             if(cond)
                 state = 17;
@@ -211,32 +209,27 @@ PSR_SUPER, PSR_PREV_SUP, ClrPC, nPCClr, output reg [31:0] MDR_AUX, MAR_AUX, WIM_
             end 
            17: //branch t1
             begin
-                BAUX = 0;
+                PCE = 0;
                 nPC_SEL = 2;
-                DISP_SEL = 0;
-                
                 state = 18;
             end
           18: //branch t2
            begin 
+                PCE = 1;
                 nPCE = 0;
-                //BAUX = 1;  !!!!!!!!testing changes
                 
                 state = 19;
            end
           19: //branch t3
            begin
                 nPCE = 1;
-                //BAUX = 0;  !!!!!!!!!!!!testing changes
                 
-                //if(nPC > 508)
-                 //state = 84;
-                //else state = 90;
-                state = 86;
+                if(nPC > 508)
+                 state = 84;
+                else state = 90;
            end
           20: //branch F
            begin
-                BAUX = 0;
                 if(IR[29] == 1)
                  state = 21;
                 else state = 86;
@@ -245,11 +238,12 @@ PSR_SUPER, PSR_PREV_SUP, ClrPC, nPCClr, output reg [31:0] MDR_AUX, MAR_AUX, WIM_
            begin
                 nPC_ADDSEL = 1;
                 nPC_SEL = 0;
-                
-                state =22;
+                PCE = 0;
+                state = 22;
            end 
          22: //branchF2
           begin
+           PCE = 1;
            nPCE = 0;
            nPC_ADD = 1;
            
@@ -259,7 +253,7 @@ PSR_SUPER, PSR_PREV_SUP, ClrPC, nPCClr, output reg [31:0] MDR_AUX, MAR_AUX, WIM_
            begin
            nPCE = 1;
            nPC_ADD = 0;
-    
+            
            if(nPC > 508)
              state = 84;
             else state = 90;
@@ -718,7 +712,7 @@ PSR_SUPER, PSR_PREV_SUP, ClrPC, nPCClr, output reg [31:0] MDR_AUX, MAR_AUX, WIM_
         begin
          MFA = 0;
          
-         state = 84;
+         state = 86;
         end
        84: //invalid instruction 1
         begin
@@ -916,7 +910,50 @@ PSR_SUPER, PSR_PREV_SUP, ClrPC, nPCClr, output reg [31:0] MDR_AUX, MAR_AUX, WIM_
         
             state = 86;
         end
-        
+       110: //branch new
+       begin
+        $display("branch");   
+         DISP_SEL = 0;
+         BAUX = 1;
+         
+         state = 111;   
+       end
+     111: //branch new 2
+        begin
+         BAUX = 0;
+         cond = 0;
+         checkFlags;
+         if(cond)
+           state = 112; 
+         else state = 20;
+          // state = 116;  
+       end
+     112:  //branch new true1
+        begin
+            PCE = 0;
+            
+            state = 113;
+        end
+     113:   //branch new true2
+        begin
+            PCE = 1;
+            nPC_SEL = 2;
+            
+            state = 114;
+        end
+     114: //branch new true3
+      begin
+            nPCE = 0;
+            
+            state = 115;
+      end
+      115: //branch new true4
+        begin
+            nPCE = 1;
+            
+            state = 90;
+        end  
+   
      endcase
     end
 

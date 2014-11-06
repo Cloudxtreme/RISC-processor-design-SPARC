@@ -159,7 +159,8 @@ PSR_SUPER, PSR_PREV_SUP, ClrPC, nPCClr, output reg [31:0] MDR_AUX, MAR_AUX, WIM_
                 if(IR[24:22] == 4)
                     state = 12;
                 else if(IR[24:22] == 2)
-                    state = 15;
+                   state = 110;
+                   // state = 15;
                 else state = 84; 
             end
            12: //Set high1
@@ -186,13 +187,13 @@ PSR_SUPER, PSR_PREV_SUP, ClrPC, nPCClr, output reg [31:0] MDR_AUX, MAR_AUX, WIM_
                RFE = 1;
                ALUE = 0;
                
-               state = 15;     
+               state = 86;     
              end
            15: //branch1
             begin
                 //PCE = 0;
-                $display("branch");
-                DISP_SEL = 0;
+                $display("branch");                                 
+                DISP_SEL = 0;                                       //|\\
                 BAUX = 1;
                 state = 16;
             end
@@ -891,7 +892,52 @@ PSR_SUPER, PSR_PREV_SUP, ClrPC, nPCClr, output reg [31:0] MDR_AUX, MAR_AUX, WIM_
         
             state = 86;
         end
-        
+     110: //branch new
+       begin
+         DISP_SEL = 0;
+         BAUX = 1;
+         
+         state = 111;   
+       end
+     111: //branch new 2
+        begin
+         BAUX = 0;
+         cond = 0;
+         checkFlags;
+         if(cond)
+           state = 112; 
+         else state = 20;
+          // state = 116;  
+       end
+     112:  //branch new true1
+        begin
+            PCE = 0;
+            
+            state = 113;
+        end
+     113:   //branch new true2
+        begin
+            PCE = 1;
+            nPC_SEL = 2;
+            
+            state = 114;
+        end
+     114: //branch new true3
+      begin
+            nPCE = 0;
+            
+            state = 115;
+      end
+      115: //branch new true4
+        begin
+            nPCE = 1;
+            
+            state = 90;
+        end  
+      116: //branch new false1
+        begin
+            
+        end
      endcase
     end
 

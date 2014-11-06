@@ -84,7 +84,7 @@ PSR_SUPER, PSR_PREV_SUP, ClrPC, nPCClr, MDR_AUX, MAR_AUX, WIM_IN, nPC_SEL, ALU_S
         // crap test from here on
       $display("Test Start");
       $display("ALU:\t\tPC:\t\tIR:\t\t\n");
-      repeat(200) 
+      repeat(760) 
        begin
         #500
         Clk = 0;
