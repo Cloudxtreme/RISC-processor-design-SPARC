@@ -580,6 +580,7 @@ PSR_SUPER, PSR_PREV_SUP, ClrPC, nPCClr, output reg [31:0] MDR_AUX, MAR_AUX, WIM_
         begin
             RFE = 1;
             ALUE = 0;
+            #10
             $display("ALU=%d  Rd=%d",ALU[15:0],IR[29:25]);
             state = 86;
         end

@@ -67,9 +67,9 @@ PSR_SUPER, PSR_PREV_SUP, ClrPC, nPCClr, MDR_AUX, MAR_AUX, WIM_IN, nPC_SEL, ALU_S
 //        MFA = 0;
 
       i = 0;
-        $readmemb("file1.txt",buffer);
+        $readmemb("testcode_sparc2.txt",buffer);
         $display("  Preloading memory from file");
-        for(i=0;i<511;i=i+1)begin
+        for(i=0;i<512;i=i+1)begin
             path.ram1.ram[i] = buffer[i[7:0]];
         end
         //path.registerFile.regWin1.block2.reg1.Y = 5;
