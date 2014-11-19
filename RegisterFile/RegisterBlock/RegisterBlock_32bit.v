@@ -55,7 +55,7 @@ module register_block_32bit (output reg [31:0] Aout, Bout, input [31:0] in, inpu
  
  //----------------enable gate4---------------------------------\\
      
-     nand(gate6, BE,RE4);
+     nand(gate4, BE,RE4);
      
      register_32bit_le_aclr reg4(reg4Out,in,gate4,1,Clk);
  //------------------------------------------------------------\\

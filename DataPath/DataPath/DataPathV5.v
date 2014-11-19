@@ -139,7 +139,7 @@ module  DataPathV5(output reg [31:0] IR, PSR, MAR, MDR, PC, nPC, TBR, WIM, TQ, A
     //mux_4x1_32bit(output reg[31:0] Y,input wire[1:0] s, input wire[31:0] I3, I2, I1, I0);
     wire [31:0] ALU_MUX_out;
     //reg [31:0]ALU;
-    mux_4x1_32bit ALU_MUX(ALU_MUX_out, ALU_SEL, {10'h000,IR_out[21:0]}, {25'h0000000,IR_out[6:0]}, {{19{1'b0}},IR_out[12:0]}, RF_Bout);
+    mux_4x1_32bit ALU_MUX(ALU_MUX_out, ALU_SEL, {{10{IR[21]}},IR_out[21:0]}, {{25{IR[6]}},IR_out[6:0]}, {{19{IR[12]}},IR_out[12:0]}, RF_Bout);
     
     //building MDR_MUX
     wire [31:0] MDR_MUX_out;

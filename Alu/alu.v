@@ -138,6 +138,10 @@ module  ALU_32bit(output reg [31:0] result, output reg N, Z, V, C, input [31:0] 
                     begin
                         result = A_in >>> B_in[31:0];
                     end
+                6'b101010: //sethi
+                    begin
+                        result = {B_in[22:0],10'b0000000000};
+                    end
                 endcase
              
         end //end always

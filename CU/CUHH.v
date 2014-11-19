@@ -15,7 +15,7 @@ PSR_SUPER, PSR_PREV_SUP, ClrPC, nPCClr, output reg [31:0] MDR_AUX, MAR_AUX, WIM_
     
     always @(posedge Clk)
      begin
-    // $display("state: %d;\tPC: %h;\tnPC: %h", state, PC, nPC);
+     //$display("state: %d;\tPC: %h;\tnPC: %h", state, PC, nPC);
         case (state)
             //reset 1
             0: begin
@@ -188,7 +188,7 @@ PSR_SUPER, PSR_PREV_SUP, ClrPC, nPCClr, output reg [31:0] MDR_AUX, MAR_AUX, WIM_
              begin
                RFE = 1;
                ALUE = 0;
-               
+               $display("ALU=%h  Rd=%d",ALU[31:0],IR[29:25]);
                state = 86;     
              end
            15: //branch1
@@ -301,7 +301,7 @@ PSR_SUPER, PSR_PREV_SUP, ClrPC, nPCClr, output reg [31:0] MDR_AUX, MAR_AUX, WIM_
         begin
             nPCE = 1;
             //BAUX = 0;
-            
+            $display("disp30 = %h",IR[29:0]);
             //check valid address
             if(nPC > 508)
              state = 84;
@@ -355,13 +355,13 @@ PSR_SUPER, PSR_PREV_SUP, ClrPC, nPCClr, output reg [31:0] MDR_AUX, MAR_AUX, WIM_
         35: //jmpl R
             begin
              ALU_SEL = 0;
-             
+             $display("rd = %d\trs1 = %d\trs2 = %d",IR[29:25],IR[18:14],IR[4:0]);
              state = 37;
             end
         36: //jmpl D
           begin
             ALU_SEL = 1;
-            
+            $display("rd = %d\trs1 = %d\tsimm13 = %d",IR[29:25],IR[18:14],IR[12:0]);
             state = 37;
           end 
         37: //jmpl 4
@@ -571,9 +571,9 @@ PSR_SUPER, PSR_PREV_SUP, ClrPC, nPCClr, output reg [31:0] MDR_AUX, MAR_AUX, WIM_
         end
      63: //ALOP2
         begin
-            RFE = 0;
-            ALUE = 1;
             
+            ALUE = 1;
+            RFE = 0;
             state = 64;
         end
      64: //ALOP3   
@@ -611,6 +611,7 @@ PSR_SUPER, PSR_PREV_SUP, ClrPC, nPCClr, output reg [31:0] MDR_AUX, MAR_AUX, WIM_
             MAR_SEL = 0;
             RA_SEL = 0;
             AOP_SEL = 1;
+            ALUE = 0;
             OP1 = 6'b000000;
             //$display("load/store");
             if(IR[13] == 1)
@@ -742,6 +743,7 @@ PSR_SUPER, PSR_PREV_SUP, ClrPC, nPCClr, output reg [31:0] MDR_AUX, MAR_AUX, WIM_
         end 
        86: //nPC update 1
         begin
+        RFE=1;
          PCE = 0;
          MOP_SEL = 1;
          OP1 = 6'h08;

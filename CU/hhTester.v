@@ -10,7 +10,7 @@ module  CU_tester(
 
 
  integer i;
-    reg [7:0] buffer[0:55];
+    reg [7:0] buffer[0:223];
     wire [31:0] IR, PSR, MAR, MDR, PC, nPC, TBR, WIM, TQ,ALU;
     wire [0:0] MFC;
     wire [0:0] IRE, MDRE, TBRE, nPCE, PCE, MARE, nPC_ADD,tQE,tQClr, IRClr, 
@@ -67,9 +67,9 @@ PSR_SUPER, PSR_PREV_SUP, ClrPC, nPCClr, MDR_AUX, MAR_AUX, WIM_IN, nPC_SEL, ALU_S
 //        MFA = 0;
 
       i = 0;
-        $readmemb("fileHH.txt",buffer);
+        $readmemb("testcode_sparc2.txt",buffer);
         $display("  Preloading memory from file");
-        for(i=0;i<56;i=i+1)begin
+        for(i=0;i<224;i=i+1)begin
             path.ram1.ram[i] = buffer[i[7:0]];
         end
         //path.registerFile.regWin1.block2.reg1.Y = 5;
@@ -84,7 +84,7 @@ PSR_SUPER, PSR_PREV_SUP, ClrPC, nPCClr, MDR_AUX, MAR_AUX, WIM_IN, nPC_SEL, ALU_S
         // crap test from here on
       $display("***************************Test Start*******************************");
       //$display("ALU:\t\tPC:\t\tIR:\t\t\n");
-      repeat(760) 
+      repeat(880) 
        begin
         #500
         Clk = 0;
@@ -99,7 +99,7 @@ PSR_SUPER, PSR_PREV_SUP, ClrPC, nPCClr, MDR_AUX, MAR_AUX, WIM_IN, nPC_SEL, ALU_S
       $writememb("ram_output.txt",path.ram1.ram);
       $writememh("ram_outputHEX.txt",path.ram1.ram);
       $display("RAM output:");
-      for(i=0;i<56;i=i+4)begin
+      for(i=0;i<300;i=i+4)begin
             $display("%d:   %h %h %h %h",i[15:0],path.ram1.ram[i],path.ram1.ram[i+1],path.ram1.ram[i+2],path.ram1.ram[i+3]);
         end
       
@@ -113,14 +113,14 @@ PSR_SUPER, PSR_PREV_SUP, ClrPC, nPCClr, MDR_AUX, MAR_AUX, WIM_IN, nPC_SEL, ALU_S
             $display("\tR5 = %d",path.registerFile.global.reg5.Y);
             $display("\tR6 = %d",path.registerFile.global.reg6.Y);
             $display("\tR7 = %d",path.registerFile.global.reg7.Y);
-            $display("\tR8 = %d",path.registerFile.regWin3.block3.reg0.Y);
-            $display("\tR9 = %d",path.registerFile.regWin3.block3.reg1.Y);
-            $display("\tR10 = %d",path.registerFile.regWin3.block3.reg2.Y);
-            $display("\tR11 = %d",path.registerFile.regWin3.block3.reg3.Y);
-            $display("\tR12 = %d",path.registerFile.regWin3.block3.reg4.Y);
-            $display("\tR13 = %d",path.registerFile.regWin3.block3.reg5.Y);
-            $display("\tR14 = %d",path.registerFile.regWin3.block3.reg6.Y);
-            $display("\tR15 = %d",path.registerFile.regWin3.block3.reg7.Y);
+            $display("\tR8 = %d",path.registerFile.regWin0.block3.reg0.Y);
+            $display("\tR9 = %d",path.registerFile.regWin0.block3.reg1.Y);
+            $display("\tR10 = %d",path.registerFile.regWin0.block3.reg2.Y);
+            $display("\tR11 = %d",path.registerFile.regWin0.block3.reg3.Y);
+            $display("\tR12 = %d",path.registerFile.regWin0.block3.reg4.Y);
+            $display("\tR13 = %d",path.registerFile.regWin0.block3.reg5.Y);
+            $display("\tR14 = %d",path.registerFile.regWin0.block3.reg6.Y);
+            $display("\tR15 = %d",path.registerFile.regWin0.block3.reg7.Y);
             $display("\tR16 = %d",path.registerFile.regWin1.block2.reg0.Y);
             $display("\tR17 = %d",path.registerFile.regWin1.block2.reg1.Y);
             $display("\tR18 = %d",path.registerFile.regWin1.block2.reg2.Y);

@@ -15,7 +15,7 @@ module  RegisterWindow(output reg [31:0] AxOut, BxOut, Aout, Bout, input [31:0] 
   and(block3And2Level1, BE1, WEx, RFE);
   
   wire block3EN;
-  or(block3EN,block3AndLevel1,block3AndLevel2);
+  or(block3EN,block3AndLevel1,block3And2Level1);
     
   //Build Block3
   wire [31:0] Aout_temp_block3;

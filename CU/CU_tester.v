@@ -10,7 +10,7 @@ module  CU_tester(
 
 
  integer i;
-    reg [7:0] buffer[0:511];
+    reg [7:0] buffer[0:223];
     wire [31:0] IR, PSR, MAR, MDR, PC, nPC, TBR, WIM, TQ,ALU;
     wire [0:0] MFC;
     wire [0:0] IRE, MDRE, TBRE, nPCE, PCE, MARE, nPC_ADD,tQE,tQClr, IRClr, 
@@ -67,9 +67,9 @@ PSR_SUPER, PSR_PREV_SUP, ClrPC, nPCClr, MDR_AUX, MAR_AUX, WIM_IN, nPC_SEL, ALU_S
 //        MFA = 0;
 
       i = 0;
-        $readmemb("testcode_sparc2.txt",buffer);
+        $readmemb("fileHH.txt",buffer);
         $display("  Preloading memory from file");
-        for(i=0;i<512;i=i+1)begin
+        for(i=0;i<224;i=i+1)begin
             path.ram1.ram[i] = buffer[i[7:0]];
         end
         //path.registerFile.regWin1.block2.reg1.Y = 5;
@@ -84,13 +84,13 @@ PSR_SUPER, PSR_PREV_SUP, ClrPC, nPCClr, MDR_AUX, MAR_AUX, WIM_IN, nPC_SEL, ALU_S
         // crap test from here on
       $display("Test Start");
       $display("ALU:\t\tPC:\t\tIR:\t\t\n");
-      repeat(760) 
+      repeat(100)//760 for first code 
        begin
-        #500
+        #1000
         Clk = 0;
-        #500
+        #1000
         Clk = 1;
-        $display("%h\t%h\t%h\t%h\t%h", ALU, PC, IR, nPC, MDR);
+        $display("%h\t%h\t%h\t%h\t%h\t", ALU, PC, IR, nPC, MDR,path.registerFile.global.reg1.Y);
        end  
       //$display("ALU:\t\tPC:\t\tIR:\t\t\n"); 
       //$monitor("%h\t%h\t%h\t", ALU, PC, IR); 
