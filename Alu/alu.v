@@ -5,9 +5,10 @@
 *
 * Description: 32 bit ALU for sparc implementation.
 ***************************************/
-module  ALU_32bit(output reg [31:0] result, output reg N, Z, V, C, input [31:0] A_in, B_in, input [5:0] opcode, input carry, ALUE);
+module  ALU_32bit(output reg [31:0] result, output reg N, Z, V, C, input [31:0] A_in, B_in, input [5:0] opcode, input carry, ALUE, IMM);
     reg [32:0] temp_res;//reg N, Z, C, V
     reg [32:0] sub_temp;
+    integer count,count2,count3,i;
     
     always @ (posedge ALUE)
         begin
@@ -136,7 +137,21 @@ module  ALU_32bit(output reg [31:0] result, output reg N, Z, V, C, input [31:0] 
                     end
                 6'b100111:  //Shift right arithmetic
                     begin
-                        result = A_in >>> B_in[31:0];
+                        if(A_in[31])begin
+                        count = B_in[31:0];
+                        count3 = A_in;
+                        
+                        for(i=0;i<count;i=i+1)begin
+                            count2 = count3 >>> 1;
+                            count3 = count2;
+                            result = {1'b1,count2[30:0]};
+                        end
+                        end
+                        else
+                            result = A_in >>> B_in;
+                        
+                        
+                        
                     end
                 6'b101010: //sethi
                     begin
@@ -151,8 +166,9 @@ module  ALU_32bit(output reg [31:0] result, output reg N, Z, V, C, input [31:0] 
     task checkAddOverflow;
         begin
             //Check for the 2 result cases of a overflow: positive+positive=negative or negative+negative=positive
-            if((A_in[31] == 0 && B_in[31] == 0 && result[31] == 1) || (A_in[31] == 1 && B_in[31] == 1 && result[31] == 0))
+            if((A_in[31] == B_in[31] && result[31] != A_in[31]))
                 V=1;
+                
             else 
                 V = 0;//no overflow
         end

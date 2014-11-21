@@ -99,7 +99,7 @@ PSR_SUPER, PSR_PREV_SUP, ClrPC, nPCClr, MDR_AUX, MAR_AUX, WIM_IN, nPC_SEL, ALU_S
       $writememb("ram_output.txt",path.ram1.ram);
       $writememh("ram_outputHEX.txt",path.ram1.ram);
       $display("RAM output:");
-      for(i=0;i<300;i=i+4)begin
+      for(i=0;i<260;i=i+4)begin
             $display("%d:   %h %h %h %h",i[15:0],path.ram1.ram[i],path.ram1.ram[i+1],path.ram1.ram[i+2],path.ram1.ram[i+3]);
         end
       

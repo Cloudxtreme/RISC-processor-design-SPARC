@@ -9,7 +9,7 @@ module  DataPathV5(output reg [31:0] IR, PSR, MAR, MDR, PC, nPC, TBR, WIM, TQ, A
                     output reg [0:0] MFC, input [0:0] IRE, MDRE, TBRE, nPCE, PCE, MARE, nPC_ADD,tQE,tQClr, IRClr, 
                     nPC_ADDSEL, TB_ADD, MFA, MOP_SEL, PSRE, BAUX, 
                     RFE, RA_SEL, DISP_SEL, AOP_SEL, WIME, ttAUX, ET, ALUE,
-                    PSR_SUPER, PSR_PREV_SUP, ClrPC, Clk, nPCClr,
+                    PSR_SUPER, PSR_PREV_SUP, ClrPC, Clk, nPCClr,IMM,
                     input [31:0] MDR_AUX, MAR_AUX,
                     input [1:0] nPC_SEL, ALU_SEL, CIN_SEL, RC_SEL, MAR_SEL, MDR_SEL, PSR_SEL, TBA_SEL,
                     input [4:0] CWP, input [5:0] OP1, input [24:0] TBA_IN,
@@ -34,7 +34,7 @@ module  DataPathV5(output reg [31:0] IR, PSR, MAR, MDR, PC, nPC, TBR, WIM, TQ, A
     wire [0:0] N, Z, V, C, Carry;
     wire [31:0] alu_out;
     //output reg [31:0] result, output reg N, Z, V, C, input [31:0] A_in, B_in, input [5:0] opcode, input carry);
-    ALU_32bit alu(alu_out,N, Z, V, C, RF_Aout, ALU_MUX_out, AOP_MUX_out[5:0], Carry, ALUE);
+    ALU_32bit alu(alu_out,N, Z, V, C, RF_Aout, ALU_MUX_out, AOP_MUX_out[5:0], Carry, ALUE,IMM);
     
     //--------CREATING REGISTERS----------//
     

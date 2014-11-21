@@ -310,19 +310,20 @@ PSR_SUPER, PSR_PREV_SUP, ClrPC, nPCClr, output reg [31:0] MDR_AUX, MAR_AUX, WIM_
        28: // op 2.1
         begin
             if(IR[24:19] == 6'b111000)
-             state = 29;
+                    state = 29;
             else if(IR[24:19] == 6'b111001)
              state = 40;
             else if(IR[24:19] == 6'b111100 || IR[24:19] == 6'b111101)
              state = 51;
             else if(IR[24:19] == 6'b111010)
              state = 65;
-            else if(IR[24:19] == 6'b110001)
-             state = 101;//WRTPSR
-            else if(IR[24:19] == 6'b110010)
-             state = 0;//WRTWIM
-            else if(IR[24:19] == 6'b110011)
-             state = 0;//WRTTBR
+            else if(IR[24:19] == 6'b110001 || IR[24:19] == 6'b110010 || IR[24:19] == 6'b110011)
+                begin
+                    if(PSR[7])//check supervisor
+                        state = 101;//WRTPSR
+                    else
+                        state = 84;
+                end
             else state = 60;
         end 
       29: //jmpl !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
